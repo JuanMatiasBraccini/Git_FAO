@@ -1,47 +1,72 @@
 # Script for analysing FAO non-fin product project
-
+#MISSING: set up groups of questions for 3 interviews, with a & b being now and before...
 library(readxl)
 library(tidyverse)
 library(lubridate)
 
 # Section 1. Import Data --------------------------------------------------
 path='C:\\Matias\\FAO\\Shark_meat\\data\\Mexico\\'
+
+  #Questionnaire data
 Fisher <- read_excel(paste(path,"DATA BASE SURVEY.xlsx",sep=""), sheet = "Fisher survey")
-#Middle <- read_excel(paste(path,"DATA BASE SURVEY.xlsx",sep=""), sheet = "Middleman-Aggregator survey")
-#Seller <- read_excel(paste(path,"DATA BASE SURVEY.xlsx",sep=""), sheet = "Seller survey")
+Middle <- read_excel(paste(path,"DATA BASE SURVEY.xlsx",sep=""), sheet = "Middleman-Aggregator survey")
+Seller <- read_excel(paste(path,"DATA BASE SURVEY.xlsx",sep=""), sheet = "Seller survey")
+
+  #Reference guide
+Fisher.ref <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "G.reference (Fisher Surv)")
+Middle.ref <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "G.reference (middle)")
+Seller.ref <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "G.reference (seller)")
+Species <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "Guide sp")
 
 
 # Section 2. Manipulate Data --------------------------------------------------
   #tidy up data
 Fisher <- Fisher%>%as.data.frame%>%
-          mutate(year=year(DATE),
-                 month=month(DATE))
-#Middle <- Middle%>%as.data.frame
-#Seller <- Seller%>%as.data.frame
+          rename_all(tolower)%>%
+          mutate(year=year(date),
+                 month=month(date))
+          
+Middle <- Middle%>%as.data.frame%>%
+          rename_all(tolower)%>%
+          mutate(year=year(date),
+                 month=month(date))%>%
+          filter(!is.na(surveys))
 
+Seller <- Seller%>%as.data.frame%>%
+          rename_all(tolower)%>%
+            mutate(year=year(date),
+                   month=month(date))
 
-  #define how to summarise each question
+Fisher.ref <- Fisher.ref%>%as.data.frame%>%
+              mutate(Question=tolower(Question))
+
+Middle.ref <- Middle.ref%>%as.data.frame%>%
+  mutate(Question=tolower(Question))
+
+Seller.ref <- Seller.ref%>%as.data.frame%>%
+  mutate(Question=tolower(Question))
+  #define how to group and summarise each question
 
 Q.list.Fisher=list(
-    General=c('LOCATION','ESTATE (Districit)',  #define how to group vars for display
-              'Q1','Q2','Q3','Q4'),  
-    Catch=c('Q5 & Q6',
-           'Q7_a & Q8_a',
-           'Q7_b & Q8_b',
-           'Q7_c & Q8_c',
-           'Q9_a & Q10_a',
-           'Q9_b & Q10_b',
-           'Q9_c & Q10_c',
-           'Q15 & Q16'),
-   Effort=c('Q11 & Q12',
-            'Q13 & Q14'),
+    General=c('location','estate (districit)',  #define how to group vars for display
+              'q1','q2','q3','q4'),  
+    Catch=c('q5 & q6',                          #the & groups the same question 'now' and 'before'
+           'q7_a & q8_a',
+           'q7_b & q8_b',
+           'q7_c & q8_c',
+           'q9_a & q10_a',
+           'q9_b & q10_b',
+           'q9_c & q10_c',
+           'q15 & q16'),
+   Effort=c('q11 & q12',
+            'q13 & q14'),
    Boat=c(''),
    Management=c(''),
    Species_compo=c(''))
 
-Q.list.Middle=list()
+Q.list.Middle=list(General="Market_name","Location","Estate")
 
-Q.list.Seller=list()
+Q.list.Seller=list(General="Village","Location","Estate","Type_of_location")
 
 
 # Section 3. Analyses --------------------------------------------------
@@ -105,6 +130,14 @@ fn.fig=function(NAME,Width,Height) jpeg(file=paste(NAME,".jpeg",sep=""),width=Wi
 smart.par=function(n.plots,MAR,OMA,MGP) return(par(mfrow=n2mfrow(n.plots),mar=MAR,oma=OMA,las=1,mgp=MGP,xpd=T))
 path='C:\\Matias\\FAO\\Shark_meat\\Outputs\\Mexico\\'
 
+#Output date of interviews
+Tab.dates=with(data.frame(group=c(rep("Fisher",length(Fisher$date)),
+                   rep("Middle",length(Middle$date)),
+                   rep("Seller",length(Seller$date))),
+           date=as.character(c(Fisher$date,Middle$date,Seller$date))),
+     table(group,date))
+write.csv(Tab.dates,paste(path,"Interview.dates.csv",sep="\\"),row.names = T)
+
   #Fisher
 for(i in 1:length(Q.list.Fisher))
 {
@@ -137,8 +170,6 @@ for(i in 1:length(Q.list.Fisher))
   dev.off()
 }
 
-
-
   #Middle
 for(i in 1:length(Q.list.Middle))
 {
@@ -146,10 +177,7 @@ for(i in 1:length(Q.list.Middle))
 }
 
 
-
-
   #Seller
-
 for(i in 1:length(Q.list.Seller))
 {
   
