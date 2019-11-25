@@ -20,7 +20,7 @@ Species <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "Guide sp")
 
 
 # Section 2. Manipulate Data --------------------------------------------------
-  #tidy up data
+  #2.1. tidy up data
 Fisher <- Fisher%>%as.data.frame%>%
           rename_all(tolower)%>%
           mutate(year=year(date),
@@ -45,21 +45,47 @@ Middle.ref <- Middle.ref%>%as.data.frame%>%
 
 Seller.ref <- Seller.ref%>%as.data.frame%>%
   mutate(Question=tolower(Question))
-  #define how to group and summarise each question
 
+  #2.2. define how to group and summarise each question
+
+#define how to group vars for display
+#note: the '&' groups the same question 'now' and 'before'
+
+#missing: q13 & q14 must be analysed if they are shark fishers or not!
+#problem: Q17 and Q19 are 'catch now at average capacity' but 
+#         Q18 and Q20 are 'catch before at maximum capacity'
+#         Q36, 37 & 38: are these 'now' or 'before' would have to assume 'now'
 Q.list.Fisher=list(
-    General=c('location','estate (districit)',  #define how to group vars for display
+    General=c('location','estate (districit)',  
               'q1','q2','q3','q4'),  
-    Catch=c('q5 & q6',                          #the & groups the same question 'now' and 'before'
+    Catch=c('q5 & q6',                          
            'q7_a & q8_a',
            'q7_b & q8_b',
            'q7_c & q8_c',
            'q9_a & q10_a',
            'q9_b & q10_b',
            'q9_c & q10_c',
-           'q15 & q16'),
+           'q15 & q16',
+           'q17 & q18',
+           'q19 & q20',
+           'q25 & q26',
+           'q27 & q28'
+           ),
    Effort=c('q11 & q12',
             'q13 & q14'),
+   Socio.economics=c('q21 & q22',
+                     'q23 & q24',
+                     'q29 & q30',
+                     'q31 & q32',
+                     'q33',
+                     'q34 & q35',
+                     'q36','q37',
+                     'q38',
+                     'q39','q39_b',
+                     'q40 & q41',
+                     'q42','q42_b',
+                     'q43','q43_b',
+                     'q44','q44_b'),
    Boat=c(''),
    Management=c(''),
    Species_compo=c(''))
