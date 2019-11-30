@@ -100,23 +100,62 @@ Q.list.Fisher=list(
                      'q44','q44_b',
                      'q45',
                      'q82 & q83',
-                     'q84 & q85'),
+                     'q84 & q85',
+                     paste(paste('q104',tolower(LETTERS[1:11]),sep='_'),collapse=" & "),
+                     paste(paste('q105',tolower(LETTERS[1:11]),sep='_'),collapse=" & "),
+                     'q106 & q107'),
    Management=c(paste('q',67:77,sep=''),
                       'q78 & q79',
                       'q80'),
    Seasonal.patrn=c(paste(paste('q89',tolower(LETTERS[1:10]),sep='_'),collapse=" & "),
                     paste(paste('q90',tolower(LETTERS[1:10]),sep='_'),collapse=" & "),
                     'q91 & q92',
-                    'q95'
+                    'q95',
+                    'q97',
+                    'q99',
+                    'q100 & q102',
+                    'q101 & q103'
                     ),
    Species_compo=c(paste(paste('q87',tolower(LETTERS[1:10]),sep='_'),collapse=" & "),
                    paste(paste('q88',tolower(LETTERS[1:10]),sep='_'),collapse=" & "),
                    paste(paste('q93',tolower(LETTERS[1:11]),sep='_'),collapse=" & "),
-                   paste(paste('q94',tolower(LETTERS[1:11]),sep='_'),collapse=" & ")
-                   
+                   paste(paste('q94',tolower(LETTERS[1:11]),sep='_'),collapse=" & "),
+                   paste(paste('q96',tolower(LETTERS[1:11]),sep='_'),collapse=" & "),
+                   paste(paste('q98',tolower(LETTERS[1:11]),sep='_'),collapse=" & ")
                    ))
 
-Q.list.Middle=list(General=c("Market_name","Location","Estate"))
+Q.list.Middle=list(General=c("Market_name","Location","Estate",
+                             'q1',
+                             'q2 & q3 & q4_a & q4_b & q4_c',
+                             'q5 & q6_a & q6_b',
+                             'q7',
+                             'q8',
+                             paste(paste('q9',tolower(LETTERS[1:6]),sep='_'),collapse=" & "),
+                             paste('q',10:13,sep=''),
+                             paste(paste('q14',tolower(LETTERS[1:4]),sep='_'),collapse=" & "),
+                             'q15',
+                             paste('q',26:31,sep='')
+                             ),
+                   Socio.economics=c(paste(c(paste(paste('q18_meat',tolower(LETTERS[1:4]),sep='_'),collapse=" & "),
+                                           paste(paste('q18_cartilage',tolower(LETTERS[1:2]),sep='_'),collapse=" & "),
+                                           paste(paste('q18_skin',tolower(LETTERS[1:2]),sep='_'),collapse=" & "),
+                                           'Q18_gill_a',
+                                           'Q18_oil_a'
+                   ),collapse=" & "),
+                   paste(c(paste(paste('q19_meat',tolower(LETTERS[1:4]),sep='_'),collapse=" & "),
+                           paste(paste('q19_cartilage',tolower(LETTERS[1:2]),sep='_'),collapse=" & "),
+                           paste(paste('q19_skin',tolower(LETTERS[1:2]),sep='_'),collapse=" & "),
+                           'Q19_gill_a',
+                           'Q19_oil_a'
+                   ),collapse=" & "),
+                   ),
+                   Management=c(paste('q',32:34,sep=''),
+                                'q35 & q35_a',
+                                'q36'),
+                   Species_compo=c(paste(paste('q16',tolower(LETTERS[1:15]),sep='_'),collapse=" & "),
+                                   paste(paste('q17',tolower(LETTERS[1:15]),sep='_'),collapse=" & "),
+                                   c('Q20_meat & Q20_cartilage & Q20_skin & Q20_gill & Q20_oil'))
+                   )
 
 Q.list.Seller=list(General=c("Village","Location","Estate","Type_of_location"))
 
