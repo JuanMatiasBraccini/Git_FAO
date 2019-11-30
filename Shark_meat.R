@@ -57,7 +57,7 @@ Seller.ref <- Seller.ref%>%as.data.frame%>%
 #         Q36, 37 & 38: are these 'now' or 'before' would have to assume 'now'
 Q.list.Fisher=list(
     General=c('location','estate (districit)',  
-              'q1','q2','q3','q4'),  
+              'q1','q2','q3','q4','q86 & q86_a'),  
     Catch=c('q5 & q6',                          
            'q7_a & q8_a',
            'q7_b & q8_b',
@@ -69,10 +69,22 @@ Q.list.Fisher=list(
            'q17 & q18',
            'q19 & q20',
            'q25 & q26',
-           'q27 & q28'
+           'q27 & q28',
+           'q56_1 & q56_2 & q56_3',
+           'q65 & q66'
            ),
    Effort=c('q11 & q12',
-            'q13 & q14'),
+            'q13 & q14',
+            'q46 & q47',
+            'q48 & q49',
+            'q50 & q51',
+            'q52 & q53',
+            'q54 & q55',
+            'q57 & q58',
+            'q59 & q60',
+            'q61 & q62',
+            'q63 & q64',
+            'q81'),
    Socio.economics=c('q21 & q22',
                      'q23 & q24',
                      'q29 & q30',
@@ -85,14 +97,28 @@ Q.list.Fisher=list(
                      'q40 & q41',
                      'q42','q42_b',
                      'q43','q43_b',
-                     'q44','q44_b'),
-   Boat=c(''),
-   Management=c(''),
-   Species_compo=c(''))
+                     'q44','q44_b',
+                     'q45',
+                     'q82 & q83',
+                     'q84 & q85'),
+   Management=c(paste('q',67:77,sep=''),
+                      'q78 & q79',
+                      'q80'),
+   Seasonal.patrn=c(paste(paste('q89',tolower(LETTERS[1:10]),sep='_'),collapse=" & "),
+                    paste(paste('q90',tolower(LETTERS[1:10]),sep='_'),collapse=" & "),
+                    'q91 & q92',
+                    'q95'
+                    ),
+   Species_compo=c(paste(paste('q87',tolower(LETTERS[1:10]),sep='_'),collapse=" & "),
+                   paste(paste('q88',tolower(LETTERS[1:10]),sep='_'),collapse=" & "),
+                   paste(paste('q93',tolower(LETTERS[1:11]),sep='_'),collapse=" & "),
+                   paste(paste('q94',tolower(LETTERS[1:11]),sep='_'),collapse=" & ")
+                   
+                   ))
 
-Q.list.Middle=list(General="Market_name","Location","Estate")
+Q.list.Middle=list(General=c("Market_name","Location","Estate"))
 
-Q.list.Seller=list(General="Village","Location","Estate","Type_of_location")
+Q.list.Seller=list(General=c("Village","Location","Estate","Type_of_location"))
 
 
 # Section 3. Analyses --------------------------------------------------
