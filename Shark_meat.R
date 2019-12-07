@@ -3,6 +3,12 @@
 library(readxl)
 library(tidyverse)
 library(lubridate)
+library("ggplot2")
+library("sf")
+library("rnaturalearthdata")
+library("rnaturalearth")
+library("ggspatial")  #for scale bar
+
 
 # Section 1. Import Data --------------------------------------------------
 path='C:\\Matias\\FAO\\Shark_meat\\data\\Mexico\\'
@@ -55,6 +61,7 @@ Seller.ref <- Seller.ref%>%as.data.frame%>%
 #problem: Q17 and Q19 are 'catch now at average capacity' but 
 #         Q18 and Q20 are 'catch before at maximum capacity'
 #         Q36, 37 & 38: are these 'now' or 'before' would have to assume 'now'
+fn.pst=function(Q,rng) paste(paste(Q,tolower(LETTERS[rng]),sep='_'),collapse=" & ")
 Q.list.Fisher=list(
     General=c('location','estate (districit)',  
               'q1','q2','q3','q4','q86 & q86_a'),  
@@ -101,14 +108,14 @@ Q.list.Fisher=list(
                      'q45',
                      'q82 & q83',
                      'q84 & q85',
-                     paste(paste('q104',tolower(LETTERS[1:11]),sep='_'),collapse=" & "),
-                     paste(paste('q105',tolower(LETTERS[1:11]),sep='_'),collapse=" & "),
+                     fn.pst('q104',1:11),
+                     fn.pst('q105',1:11),
                      'q106 & q107'),
    Management=c(paste('q',67:77,sep=''),
                       'q78 & q79',
                       'q80'),
-   Seasonal.patrn=c(paste(paste('q89',tolower(LETTERS[1:10]),sep='_'),collapse=" & "),
-                    paste(paste('q90',tolower(LETTERS[1:10]),sep='_'),collapse=" & "),
+   Seasonal.patrn=c(fn.pst('q89',1:10),
+                    fn.pst('q90',1:10),
                     'q91 & q92',
                     'q95',
                     'q97',
@@ -116,13 +123,12 @@ Q.list.Fisher=list(
                     'q100 & q102',
                     'q101 & q103'
                     ),
-   Species_compo=c(paste(paste('q87',tolower(LETTERS[1:10]),sep='_'),collapse=" & "),
-                   paste(paste('q88',tolower(LETTERS[1:10]),sep='_'),collapse=" & "),
-                   paste(paste('q93',tolower(LETTERS[1:11]),sep='_'),collapse=" & "),
-                   paste(paste('q94',tolower(LETTERS[1:11]),sep='_'),collapse=" & "),
-                   paste(paste('q96',tolower(LETTERS[1:11]),sep='_'),collapse=" & "),
-                   paste(paste('q98',tolower(LETTERS[1:11]),sep='_'),collapse=" & ")
-                   ))
+   Species_compo=c(fn.pst('q87',1:10),
+                   fn.pst('q88',1:10),
+                   fn.pst('q93',1:11),
+                   fn.pst('q94',1:11),
+                   fn.pst('q96',1:11),
+                   fn.pst('q98',1:11)))
 
 Q.list.Middle=list(General=c("Market_name","Location","Estate",
                              'q1',
@@ -130,33 +136,35 @@ Q.list.Middle=list(General=c("Market_name","Location","Estate",
                              'q5 & q6_a & q6_b',
                              'q7',
                              'q8',
-                             paste(paste('q9',tolower(LETTERS[1:6]),sep='_'),collapse=" & "),
+                             fn.pst('q9',1:6),
                              paste('q',10:13,sep=''),
-                             paste(paste('q14',tolower(LETTERS[1:4]),sep='_'),collapse=" & "),
+                             fn.pst('q14',1:4),
                              'q15',
                              paste('q',26:31,sep='')
                              ),
-                   Socio.economics=c(paste(c(paste(paste('q18_meat',tolower(LETTERS[1:4]),sep='_'),collapse=" & "),
-                                           paste(paste('q18_cartilage',tolower(LETTERS[1:2]),sep='_'),collapse=" & "),
-                                           paste(paste('q18_skin',tolower(LETTERS[1:2]),sep='_'),collapse=" & "),
+                   Socio.economics=c(paste(c(fn.pst('q18_meat',1:4),
+                                             fn.pst('q18_cartilage',1:2),
+                                             fn.pst('q18_skin',1:2),
                                            'Q18_gill_a',
-                                           'Q18_oil_a'
-                   ),collapse=" & "),
-                   paste(c(paste(paste('q19_meat',tolower(LETTERS[1:4]),sep='_'),collapse=" & "),
-                           paste(paste('q19_cartilage',tolower(LETTERS[1:2]),sep='_'),collapse=" & "),
-                           paste(paste('q19_skin',tolower(LETTERS[1:2]),sep='_'),collapse=" & "),
-                           'Q19_gill_a',
-                           'Q19_oil_a'
-                   ),collapse=" & "),
-                   ),
+                                           'Q18_oil_a'),collapse=" & "),
+                                      paste(c(fn.pst('q19_meat',1:4),
+                                                 fn.pst('q19_cartilage',1:2),
+                                                 fn.pst('q19_skin',1:2),
+                                                 'Q19_gill_a',
+                                                 'Q19_oil_a'),collapse=" & "),
+                                      c('Q21_meat & Q21_cartilage & Q21_skin & Q21_gill & Q21_oil'),
+                                     fn.pst('q22',1:5),
+                                     fn.pst('q23',1:5),
+                                     fn.pst('q24',1:5),
+                                     'q25'),
                    Management=c(paste('q',32:34,sep=''),
                                 'q35 & q35_a',
                                 'q36'),
-                   Species_compo=c(paste(paste('q16',tolower(LETTERS[1:15]),sep='_'),collapse=" & "),
-                                   paste(paste('q17',tolower(LETTERS[1:15]),sep='_'),collapse=" & "),
+                   Species_compo=c(fn.pst('q16',1:15),
+                                   fn.pst('q17',1:15),
                                    c('Q20_meat & Q20_cartilage & Q20_skin & Q20_gill & Q20_oil'))
                    )
-
+#ACA
 Q.list.Seller=list(General=c("Village","Location","Estate","Type_of_location"))
 
 
@@ -220,6 +228,50 @@ fn.brplt=function(MAT,XLAB)
 fn.fig=function(NAME,Width,Height) jpeg(file=paste(NAME,".jpeg",sep=""),width=Width,height=Height,units="px",res=300)
 smart.par=function(n.plots,MAR,OMA,MGP) return(par(mfrow=n2mfrow(n.plots),mar=MAR,oma=OMA,las=1,mgp=MGP,xpd=T))
 path='C:\\Matias\\FAO\\Shark_meat\\Outputs\\Mexico\\'
+
+
+#Map of Study Area
+theme_set(theme_bw()) # check other themes in ?ggtheme
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+
+sites.fisher=data.frame(Port=c('La Cruz de Huanacaxtle','Novilleros','Palmar de Cuautla',
+                               'San Blas','Tamiahua','Tuxpan'),
+                        longitude=c(-105.39,-105.68,-105.66,
+                                    -105.30,-97.45,-97.4),
+                        latitude=c(20.74,22.38,22.22,
+                                   21.54,21.28,20.96))
+sites.middle=data.frame(MArket=c('Cooperativa','La nueva viga',' La U','Mercado del mar'),
+                        longitude=c(-105.2,-99.05,-104.85,-104.94),
+                        latitude=c(22.22,19.34,21.54,20.75))
+
+sites.seller=data.frame(Village=c('Puerto Vallarta','Tamiahua','Tuxpan'),
+                        longitude=c(-105.22,-97.44,-97.40),
+                        latitude=c(20.65,21.27,20.96))
+
+ggplot(data = world) +
+  geom_sf(color = "grey20", fill = "grey85") +
+  coord_sf(xlim = c(-118, -80), 
+           ylim = c(15, 33), expand = T)+
+  annotation_scale(location = "bl", width_hint = 0.5) +
+  annotation_north_arrow(location = "bl",
+                         which_north = "true", pad_x = unit(0.75, "in"), 
+                         pad_y = unit(0.5, "in"),
+                         style = north_arrow_fancy_orienteering) +
+  xlab("Longitude") + ylab("Latitude") +
+  annotate(geom = "text", x = -90, y = 26, label = "Gulf of Mexico", 
+           fontface = "italic", color = "grey22", size = 5) +
+  annotate(geom = "text", x = -102.5, y = 24, label = "Mexico", 
+           fontface = "italic", color = "grey22", size = 9,srt=-60) +
+  geom_point(data = sites.fisher, aes(x = longitude, y = latitude),
+             size = 3, shape = 21, fill = "darkred")   +
+  geom_point(data = sites.middle, aes(x = longitude, y = latitude),
+             size = 3, shape = 22, fill = "darkgreen")
+geom_point(data = sites.seller, aes(x = longitude, y = latitude),
+           size = 3, shape = 23, fill = "blue")
+
+ggsave(paste(path,"map.png",sep=''),width = 10, height = 6, dpi = 300)
+
 
 #Output date of interviews
 Tab.dates=with(data.frame(group=c(rep("Fisher",length(Fisher$date)),
