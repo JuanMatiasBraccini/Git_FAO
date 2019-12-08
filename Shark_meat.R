@@ -1,5 +1,5 @@
 # Script for analysing FAO non-fin product project
-#MISSING: set up groups of questions for 3 interviews, with a & b being now and before...
+#MISSING: plots
 library(readxl)
 library(tidyverse)
 library(lubridate)
@@ -130,7 +130,7 @@ Q.list.Fisher=list(
                    fn.pst('q96',1:11),
                    fn.pst('q98',1:11)))
 
-Q.list.Middle=list(General=c("Market_name","Location","Estate",
+Q.list.Middle=list(General=c("market_name","location","estate",
                              'q1',
                              'q2 & q3 & q4_a & q4_b & q4_c',
                              'q5 & q6_a & q6_b',
@@ -152,7 +152,7 @@ Q.list.Middle=list(General=c("Market_name","Location","Estate",
                                                  fn.pst('q19_skin',1:2),
                                                  'Q19_gill_a',
                                                  'Q19_oil_a'),collapse=" & "),
-                                      c('Q21_meat & Q21_cartilage & Q21_skin & Q21_gill & Q21_oil'),
+                                      c('q21_meat & q21_cartilage & q21_skin & q21_gill & q21_oil'),
                                      fn.pst('q22',1:5),
                                      fn.pst('q23',1:5),
                                      fn.pst('q24',1:5),
@@ -162,12 +162,21 @@ Q.list.Middle=list(General=c("Market_name","Location","Estate",
                                 'q36'),
                    Species_compo=c(fn.pst('q16',1:15),
                                    fn.pst('q17',1:15),
-                                   c('Q20_meat & Q20_cartilage & Q20_skin & Q20_gill & Q20_oil'))
+                                   c('q20_meat & q20_cartilage & q20_skin & q20_gill & q20_oil'))
                    )
+
+Q.list.Seller=list(General=c("village","location","estate","type_of_location",
+                             'q1',
+                             'q2','q3 & q3_a'),
+                   Commercial=c('q4',fn.pst('q5',1:5),
+                                'q6_meat_a & q6_cartilage_b & q6_skin_c & q6_gill_d & q6_oil_6',
+                                paste('q',7:11,sep=''),fn.pst('q12',1:6),
+                                paste('q',13:17,sep='')),
+                   Consumption=c(paste('q',18:29,sep='')),
+                   Management=c('q30','q31','q32',
+                                'q33 & q33_b','q34 & q34_b'))
+
 #ACA
-Q.list.Seller=list(General=c("Village","Location","Estate","Type_of_location"))
-
-
 # Section 3. Analyses --------------------------------------------------
 colfunc <- colorRampPalette(c("lightcyan", "dodgerblue4"))
 fn.brplt=function(MAT,XLAB)
@@ -246,7 +255,7 @@ sites.middle=data.frame(MArket=c('Cooperativa','La nueva viga',' La U','Mercado 
                         latitude=c(22.22,19.34,21.54,20.75))
 
 sites.seller=data.frame(Village=c('Puerto Vallarta','Tamiahua','Tuxpan'),
-                        longitude=c(-105.22,-97.44,-97.40),
+                        longitude=c(-105.22,-97.84,-97.80),
                         latitude=c(20.65,21.27,20.96))
 
 ggplot(data = world) +
@@ -259,16 +268,24 @@ ggplot(data = world) +
                          pad_y = unit(0.5, "in"),
                          style = north_arrow_fancy_orienteering) +
   xlab("Longitude") + ylab("Latitude") +
+  theme(axis.text=element_text(size=12),
+         axis.title=element_text(size=14,face="bold"))+
   annotate(geom = "text", x = -90, y = 26, label = "Gulf of Mexico", 
-           fontface = "italic", color = "grey22", size = 5) +
+           fontface = "italic", color = "grey40", size = 5) +
   annotate(geom = "text", x = -102.5, y = 24, label = "Mexico", 
-           fontface = "italic", color = "grey22", size = 9,srt=-60) +
+           fontface = "italic", color = "grey40", size = 9,srt=-60) +
   geom_point(data = sites.fisher, aes(x = longitude, y = latitude),
              size = 3, shape = 21, fill = "darkred")   +
   geom_point(data = sites.middle, aes(x = longitude, y = latitude),
-             size = 3, shape = 22, fill = "darkgreen")
-geom_point(data = sites.seller, aes(x = longitude, y = latitude),
-           size = 3, shape = 23, fill = "blue")
+             size = 3, shape = 22, fill = "darkgreen") +
+ geom_point(data = sites.seller, aes(x = longitude, y = latitude),
+           size = 3, shape = 23, fill = "blue") +
+  geom_text(aes(x=-81,y=18),label="fisher",size=5) +
+  geom_text(aes(x=-81,y=17),label="middle",size=5) +
+  geom_text(aes(x=-81,y=16),label="seller",size=5) +
+  geom_point(aes(x=-82.75,y=18),size=3,shape = 21, fill = "darkred") +
+  geom_point(aes(x=-82.75,y=17),size=3, shape = 22, fill = "darkgreen") +
+  geom_point(aes(x=-82.75,y=16),size=3, shape = 23, fill = "blue")
 
 ggsave(paste(path,"map.png",sep=''),width = 10, height = 6, dpi = 300)
 
