@@ -1,0 +1,111 @@
+---
+title: "Use and commercialization of shark products in Mexico"
+author: Javier Tovar, xxx
+output: word_document
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "C:/Matias/FAO/Shark_meat") })
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.path = 'C:/Matias/FAO/Shark_meat/Outputs/Mexico/', echo = FALSE, warning = FALSE, message = FALSE)
+```
+# Abstract
+
+
+# Introduction
+
+Several shark populations are being fished at unsustainable levels worldwide due to a combination of sharks' natural low productivity, inadequate research, management and inforcement in many jurisdictions and the high seas, and an increasing market demand for shark fins, meat and other products. There is currently an improved understanding of the biology, ecology and population dynamics of sharks, which can underpin sustainable exploitation (e.g. Braccini et al 2019). However, the trade and demand for shark products is a much less well understood component of the sustainable explotation formula and one that requires immediate attention. 
+
+The demand for marine products continues to increase as a function of the global increase in human population (Garcia and Rosenberg 2010) and these demand drives the exploitation of marine resoruces. For example, the extinction risk of marine invertebrates is driven by their high market value as most species are exploited as luxury seafood (Purcell et al 2014). The situation is similar for other marine taxa where the interplay of demand and supply can effectively drive a population to extinction if, despite the escalating costs of capturing the remaining individuals in a population, a disproportionate large value is given to those individuals, making them more desirable (Courchamp et al 2006).
+
+The global demand for shark products is no exemption. (here describe global production, catches, and trade of shark products)
+See Dent & Clarke 2015 and Cardenosa et al 2017 for global overview of trade of shark products
+
+Mexico situation (catches, shark status, trade)
+
+
+Objectives
+
+
+# Materials and methods
+note: follow Jabado et al 2015
+
+# Results
+note: follow Jabado et al 2015
+
+Characterise the shark and ray species that make the catch and the alternative scalefish species (currently and in the past)
+
+Diagram of Distribution chain for sharks (Figure 2 Jabado et al 2015) and shark use in Figures 1 to 4 Monjurul Hasan 2017
+
+
+# Discussion
+
+# References
+Braccini et al 2019. ICES
+Courchamp et al 2006. rarity value and species extinction: the anthropogenic allee effect
+Garcia, S.M. and Rosenbery, A.A. (2010) Food security and marine capture fisheries: characteristics, trends, drivers and future perspectives. Philosophical Transactions of the Royal Society of London B 365, 2869–2880
+Purcell et al 2014. The cost of being valuable: predictors of extinction risk in marine invertebrates exploited as luxury seafood
+
+
+====================
+```{r}
+Tab1=read.table('C:/Matias/FAO/Shark_meat/Outputs/Mexico/Interview.dates.csv',
+                check.names=FALSE,sep = ",",header=T)
+knitr::kable(Tab1,caption="Inteview dates")
+```
+
+
+
+
+![Figure 1. Map of study area showing the sampling location.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/map.png)
+
+
+
+![Figure 2. Fisher questionnaire. General.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_1_General.tiff)
+
+![Figure 3. Fisher questionnaire. Fisher profile.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_2_Fisher profile.tiff)
+
+![Figure 5. Fisher questionnaire. Catch.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_3_Catch.tiff)
+
+![Figure 6. Fisher questionnaire. Effort.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_4_Effort.tiff)
+
+![Figure 7. Fisher questionnaire. Socio economics.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_5_Socio.economics.tiff)
+
+![Figure 8. Fisher questionnaire. Management.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_6_Management.tiff)
+
+![Figure 9. Fisher questionnaire. Seasonal.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_7_Seasonal.patrn.tiff)
+
+![Figure 10. Fisher questionnaire. Species composition.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_8_Species_compo.tiff)
+
+![Figure 11. Middle questionnaire. General.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Middle_1_General.tiff)
+
+![Figure 12. Middle questionnaire. Socio economics.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Middle_2_Socio.economics.tiff)
+
+![Figure 13. Middle questionnaire. Management.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Middle_3_Management.tiff)
+
+![Figure 14. Middle questionnaire. Species composition.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Middle_4_Species_compo.tiff)
+
+![Figure 15. Seller questionnaire. General.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Seller_1_General.tiff)
+
+![Figure 16. Seller questionnaire. Commercial.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Seller_2_Commercial.tiff)
+
+![Figure 17. Seller questionnaire. Consumption](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Seller_3_Consumption.tiff)
+
+![Figure 18. Seller questionnaire. Management.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Seller_4_Management.tiff)
+
+\newpage
+
+Appendices
+====================
+```{r}
+Tab1=read.table('C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher.ref.csv',
+                check.names=FALSE,sep = ",",header=T)
+knitr::kable(Tab1,caption="Questionnaire. Fisher")
+
+Tab1=read.table('C:/Matias/FAO/Shark_meat/Outputs/Mexico/Middle.ref.csv',
+                check.names=FALSE,sep = ",",header=T)
+knitr::kable(Tab1,caption="Questionnaire. Middle")
+
+Tab1=read.table('C:/Matias/FAO/Shark_meat/Outputs/Mexico/Seller.ref.csv',
+                check.names=FALSE,sep = ",",header=T)
+knitr::kable(Tab1,caption="Questionnaire. Seller")

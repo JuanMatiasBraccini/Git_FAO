@@ -30,27 +30,41 @@ Species <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "Guide sp")
 Fisher <- Fisher%>%as.data.frame%>%
           rename_all(tolower)%>%
           mutate(year=year(date),
-                 month=month(date))
+                 month=month(date))%>%
+          select_if(~sum(!is.na(.)) > 0)   #remove all NA columns
           
 Middle <- Middle%>%as.data.frame%>%
           rename_all(tolower)%>%
           mutate(year=year(date),
                  month=month(date))%>%
-          filter(!is.na(surveys))
+          filter(!is.na(surveys)) %>%
+          select_if(~sum(!is.na(.)) > 0)   #remove all NA columns
+if("q1_d" %in% colnames(Middle)) colnames(Middle)[match("q1_d",colnames(Middle))] <- "q14_d"
+
 
 Seller <- Seller%>%as.data.frame%>%
           rename_all(tolower)%>%
             mutate(year=year(date),
-                   month=month(date))
+                   month=month(date))%>%
+          select_if(~sum(!is.na(.)) > 0)   #remove all NA columns
 
 Fisher.ref <- Fisher.ref%>%as.data.frame%>%
-              mutate(Question=tolower(Question))
+              mutate(Question=tolower(Question))%>%
+              rename('Question number'=Question,
+                      Question=Question_long)%>%
+              select(-c(Section,Combo))
 
 Middle.ref <- Middle.ref%>%as.data.frame%>%
-  mutate(Question=tolower(Question))
+                  mutate(Question=tolower(Question))%>%
+                  rename('Question number'=Question,
+                         Question='Question long')%>%
+                  select(-c(Section,Combo))
 
 Seller.ref <- Seller.ref%>%as.data.frame%>%
-  mutate(Question=tolower(Question))
+                  mutate(Question=tolower(Question))%>%
+                  rename('Question number'=Question,
+                         Question='Question long')%>%
+                  select(-c(Section,Combo))
 
   #2.2. define how to group and summarise each question
 
@@ -63,8 +77,8 @@ Seller.ref <- Seller.ref%>%as.data.frame%>%
 #         Q36, 37 & 38: are these 'now' or 'before' would have to assume 'now'
 fn.pst=function(Q,rng) paste(paste(Q,tolower(LETTERS[rng]),sep='_'),collapse=" & ")
 Q.list.Fisher=list(
-    General=c('location','estate (districit)',  
-              'q1','q2','q3','q4','q86 & q86_a'),  
+    General=c('location','estate (districit)'),
+    'Fisher profile'=c('q1','q2','q3','q4','q86 & q86_a'),
     Catch=c('q5 & q6',                          
            'q7_a & q8_a',
            'q7_b & q8_b',
@@ -91,7 +105,7 @@ Q.list.Fisher=list(
             'q59 & q60',
             'q61 & q62',
             'q63 & q64',
-            'q81'),
+            fn.pst('q81',1:3)),
    Socio.economics=c('q21 & q22',
                      'q23 & q24',
                      'q29 & q30',
@@ -136,7 +150,7 @@ Q.list.Middle=list(General=c("market_name","location","estate",
                              'q5 & q6_a & q6_b',
                              'q7',
                              'q8',
-                             fn.pst('q9',1:6),
+                             fn.pst('q9',c(1:4,6:7)),
                              paste('q',10:13,sep=''),
                              fn.pst('q14',1:4),
                              'q15',
@@ -145,13 +159,13 @@ Q.list.Middle=list(General=c("market_name","location","estate",
                    Socio.economics=c(paste(c(fn.pst('q18_meat',1:4),
                                              fn.pst('q18_cartilage',1:2),
                                              fn.pst('q18_skin',1:2),
-                                           'Q18_gill_a',
-                                           'Q18_oil_a'),collapse=" & "),
+                                           'q18_gill_a',
+                                           'q18_oil_a'),collapse=" & "),
                                       paste(c(fn.pst('q19_meat',1:4),
                                                  fn.pst('q19_cartilage',1:2),
                                                  fn.pst('q19_skin',1:2),
-                                                 'Q19_gill_a',
-                                                 'Q19_oil_a'),collapse=" & "),
+                                                 'q19_gill_a',
+                                                 'q19_oil_a'),collapse=" & "),
                                       c('q21_meat & q21_cartilage & q21_skin & q21_gill & q21_oil'),
                                      fn.pst('q22',1:5),
                                      fn.pst('q23',1:5),
@@ -165,18 +179,22 @@ Q.list.Middle=list(General=c("market_name","location","estate",
                                    c('q20_meat & q20_cartilage & q20_skin & q20_gill & q20_oil'))
                    )
 
+#note: all these questions have only NAs so not included
+# Q5_b	Q5_c	Q5_d	Q5_e
+# Q6_cartilage_b	Q6_skin_c	Q6_gill_d	Q6_oil_e
+# Q8
 Q.list.Seller=list(General=c("village","location","estate","type_of_location",
                              'q1',
                              'q2','q3 & q3_a'),
-                   Commercial=c('q4',fn.pst('q5',1:5),
-                                'q6_meat_a & q6_cartilage_b & q6_skin_c & q6_gill_d & q6_oil_6',
-                                paste('q',7:11,sep=''),fn.pst('q12',1:6),
+                   Commercial=c('q4',fn.pst('q5',1),
+                                'q6_meat_a',
+                                paste('q',c(7,9:11),sep=''),fn.pst('q12',1:6),
                                 paste('q',13:17,sep='')),
                    Consumption=c(paste('q',18:29,sep='')),
                    Management=c('q30','q31','q32',
                                 'q33 & q33_b','q34 & q34_b'))
 
-#ACA
+
 # Section 3. Analyses --------------------------------------------------
 colfunc <- colorRampPalette(c("lightcyan", "dodgerblue4"))
 fn.brplt=function(MAT,XLAB)
@@ -234,7 +252,7 @@ fn.brplt=function(MAT,XLAB)
 }
 
 # Section 4. Outputs --------------------------------------------------
-fn.fig=function(NAME,Width,Height) jpeg(file=paste(NAME,".jpeg",sep=""),width=Width,height=Height,units="px",res=300)
+fn.fig=function(NAME,Width,Height) tiff(file=paste(NAME,".tiff",sep=""),width=Width,height=Height,units="px",res=300)
 smart.par=function(n.plots,MAR,OMA,MGP) return(par(mfrow=n2mfrow(n.plots),mar=MAR,oma=OMA,las=1,mgp=MGP,xpd=T))
 path='C:\\Matias\\FAO\\Shark_meat\\Outputs\\Mexico\\'
 
@@ -298,11 +316,19 @@ Tab.dates=with(data.frame(group=c(rep("Fisher",length(Fisher$date)),
      table(group,date))
 write.csv(Tab.dates,paste(path,"Interview.dates.csv",sep="\\"),row.names = T)
 
+#Output full questions
+write.csv(Fisher.ref,paste(path,"Fisher.ref.csv",sep="\\"),row.names = T)
+write.csv(Middle.ref,paste(path,"Middle.ref.csv",sep="\\"),row.names = T)
+write.csv(Seller.ref,paste(path,"Seller.ref.csv",sep="\\"),row.names = T)
+
+
+
+#Question summaries
   #Fisher
 for(i in 1:length(Q.list.Fisher))
 {
-  fn.fig(paste(path,"Fisher_",names(Q.list.Fisher)[i],sep=""),2000,2400)
-  smart.par(length(Q.list.Fisher[[i]]),MAR=c(2.5,2,3.9,.5),OMA=c(.1,1.25,.2,.1),
+  fn.fig(paste(path,"Fisher_",i,"_",names(Q.list.Fisher)[i],sep=""),2000,2400)
+  smart.par(length(Q.list.Fisher[[i]]),MAR=c(3,2,3.9,.5),OMA=c(.1,1.25,.2,.1),
             MGP=c(1.65,.2,0))
   par(tck=.025,cex.axis=1.25,cex.lab=1.5)
   for(n in 1:length(Q.list.Fisher[[i]]))
@@ -333,12 +359,62 @@ for(i in 1:length(Q.list.Fisher))
   #Middle
 for(i in 1:length(Q.list.Middle))
 {
-  
+  fn.fig(paste(path,"Middle_",i,"_",names(Q.list.Middle)[i],sep=""),2000,2400)
+  smart.par(length(Q.list.Middle[[i]]),MAR=c(3,2,3.9,.5),OMA=c(.1,1.25,.2,.1),
+            MGP=c(1.65,.2,0))
+  par(tck=.025,cex.axis=1.25,cex.lab=1.5)
+  for(n in 1:length(Q.list.Middle[[i]]))
+  {
+    this=Q.list.Middle[[i]][n]
+    if(grepl("&",this))
+    {
+      this=unlist(strsplit(this," & "))
+      dummy=Middle%>%select(this)
+      dummy$Currently=rep('Currently',nrow(dummy))
+      dummy$Before=rep('Before',nrow(dummy))
+      dummy=data.frame(var=c(dummy[,1],dummy[,2]),
+                       period=c(dummy$Currently,dummy$Before))
+      MAT=table(dummy$var,dummy$period)
+    }else
+    {
+      dummy=Middle%>%select(this)%>%pull
+      MAT=table(dummy)
+    }
+    
+    
+    fn.brplt(MAT=MAT,XLAB=Q.list.Middle[[i]][n])
+  }
+  mtext("Frequency",2,line=-.25,outer=T,las=3,cex=1.35)
+  dev.off()
 }
 
-
+#ACA
   #Seller
 for(i in 1:length(Q.list.Seller))
 {
-  
+  fn.fig(paste(path,"Seller_",i,"_",names(Q.list.Seller)[i],sep=""),2000,2400)
+  smart.par(length(Q.list.Seller[[i]]),MAR=c(3,2,3.9,.5),OMA=c(.1,1.25,.2,.1),
+            MGP=c(1.65,.2,0))
+  par(tck=.025,cex.axis=1.25,cex.lab=1.5)
+  for(n in 1:length(Q.list.Seller[[i]]))
+  {
+    this=Q.list.Seller[[i]][n]
+    if(grepl("&",this))
+    {
+      this=unlist(strsplit(this," & "))
+      dummy=Seller%>%select(this)
+      dummy$Currently=rep('Currently',nrow(dummy))
+      dummy$Before=rep('Before',nrow(dummy))
+      dummy=data.frame(var=c(dummy[,1],dummy[,2]),
+                       period=c(dummy$Currently,dummy$Before))
+      MAT=table(dummy$var,dummy$period)
+    }else
+    {
+      dummy=Seller%>%select(this)%>%pull
+      MAT=table(dummy)
+    }
+    fn.brplt(MAT=MAT,XLAB=Q.list.Seller[[i]][n])
+  }
+  mtext("Frequency",2,line=-.25,outer=T,las=3,cex=1.35)
+  dev.off()
 }
