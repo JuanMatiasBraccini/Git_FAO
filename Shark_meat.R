@@ -1,5 +1,11 @@
 # Script for analysing FAO non-fin product project
-#MISSING: plots
+#MISSING: plots and tables. 
+#        Go thru each figure and decide what is main figures, 
+#        what is appendix figures, what is text (output as table)
+#        and what is main tables and appendix table
+#Appendix tables or text: Fisher_1_General.tiff; 
+#                 q1, q3,q4 from Fisher_2_Fisher profile.tiff;
+#                 q86 & 86_a from Fisher_2_Fisher profile.tiff is stand alone (climate change)
 library(readxl)
 library(tidyverse)
 library(lubridate)
