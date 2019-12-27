@@ -3,9 +3,25 @@
 #        Go thru each figure and decide what is main figures, 
 #        what is appendix figures, what is text (output as table)
 #        and what is main tables and appendix table
-#Appendix tables or text: Fisher_1_General.tiff; 
-#                 q1, q3,q4 from Fisher_2_Fisher profile.tiff;
-#                 q86 & 86_a from Fisher_2_Fisher profile.tiff is stand alone (climate change)
+
+#deje aca: Figure 3 fisher.tiff
+
+#1. Text (export as table):
+#   Fisher_1_General.tiff; 
+#   q1, q3,q4
+
+
+#2. Nice table in body text:
+
+#3. Nice table in appendix:
+
+#4. Figure in body text:
+#   q2, 
+#   q86 & 86_a is stand alone (climate change)
+
+#5. Figure in Apendices:
+
+
 library(readxl)
 library(tidyverse)
 library(lubridate)
@@ -269,18 +285,42 @@ world <- ne_countries(scale = "medium", returnclass = "sf")
 
 
 sites.fisher=data.frame(Port=c('La Cruz de Huanacaxtle','Novilleros','Palmar de Cuautla',
-                               'San Blas','Tamiahua','Tuxpan'),
+                               'San Blas','Tamiahua','Tuxpan',
+                               'Ensenada','Mazatlán'),
                         longitude=c(-105.39,-105.68,-105.66,
-                                    -105.30,-97.45,-97.4),
+                                    -105.30,-97.45,-97.4,
+                                    -116.8,-106.4),
                         latitude=c(20.74,22.38,22.22,
-                                   21.54,21.28,20.96))
-sites.middle=data.frame(MArket=c('Cooperativa','La nueva viga',' La U','Mercado del mar'),
-                        longitude=c(-105.2,-99.05,-104.85,-104.94),
-                        latitude=c(22.22,19.34,21.54,20.75))
+                                   21.54,21.28,20.96,
+                                   31.86,23.23))
+sites.middle=data.frame(MArket=c('Cooperativa','La nueva viga',
+                                 ' La U','Mercado del mar',
+                                 'Ensenada','Mazatlán',
+                                 'Guadalajara'),
+                        longitude=c(-105.2,-99.05,
+                                    -104.85,-104.94,
+                                    -116.4,-106.6,
+                                    -103.35),
+                        latitude=c(22.22,19.34,
+                                   21.54,20.75,
+                                   31.90,23.25,
+                                   20.68))
 
-sites.seller=data.frame(Village=c('Puerto Vallarta','Tamiahua','Tuxpan'),
-                        longitude=c(-105.22,-97.84,-97.80),
-                        latitude=c(20.65,21.27,20.96))
+sites.seller=data.frame(Village=c('Puerto Vallarta','Tamiahua',
+                                  'Tuxpan',
+                                  'Ensenada','Mazatlán',
+                                  'León','Guadalajara',
+                                  'La nueva viga'),
+                        longitude=c(-105.22,-97.84,
+                                    -97.80,
+                                    -116.2,-106.2,
+                                    -101.68,-103.15,
+                                    -98.85),
+                        latitude=c(20.65,21.27,
+                                   20.96,
+                                   31.80,23.21,
+                                   21.12,20.64,
+                                   19.32))
 
 ggplot(data = world) +
   geom_sf(color = "grey20", fill = "grey85") +
