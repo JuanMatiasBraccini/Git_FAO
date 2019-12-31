@@ -1,25 +1,43 @@
 # Script for analysing FAO non-fin product project
 #MISSING: plots and tables. 
 #        Go thru each figure and decide what is main figures, 
-#        what is appendix figures, what is text (output as table)
-#        and what is main tables and appendix table
+#           what is appendix figures, what is text (output as table)
+#           and what is main tables and appendix table
+#        Use latest version of database
+#        Add a flowchart of shark product, harvesting, processing and trade 
+#         (see Figures 1-4 Monjurul et al and Figure 2 Jabado et al)
 
-#deje aca: Figure 3 fisher.tiff
+#missing: q13 & q14 must be analysed if they are shark fishers or not!
+#problem: Q17 and Q19 are 'catch now at average capacity' but 
+#         Q18 and Q20 are 'catch before at maximum capacity'
+#         Q36, 37 & 38: are these 'now' or 'before' would have to assume 'now'
 
-#1. Text (export as table):
-#   Fisher_1_General.tiff; 
-#   q1, q3,q4
 
+#deje ACA: fisher. Fisher_4_Effort.tiff
+
+#1. Just mention in Text (export as table):
+#   'location','estate (districit)' 
+#   'q1','q3','q4'
+#ktch: 'q5 & q6','q25 & q26','q27 & q28',
 
 #2. Nice table in body text:
+#Species catch composition now and before with IUCN status
 
 #3. Nice table in appendix:
 
 #4. Figure in body text:
-#   q2, 
-#   q86 & 86_a is stand alone (climate change)
+#Figure fisher catch now and then:
+# 'q7_a & q7_b & q7_c', 'q8_a & q8_b & q8_c,
+# 'q9_a & q9_b & q9_c', 'q10_a & q10_b & q10_c,
+
+
+#   Fig. Climate change 'q86' & '86_a' 
+
 
 #5. Figure in Apendices:
+#   Figure general: q2 (use histograms, not barplot; cut in 5 year intervals),
+#   Figure fisher catch: 'q15 & q16', 'q17 & q18','q19 & q20',
+#                         'q56_1 & q56_2 & q56_3','q65 & q66' (use horizontal histograms, not barplot)
 
 
 library(readxl)
@@ -31,14 +49,15 @@ library("rnaturalearthdata")
 library("rnaturalearth")
 library("ggspatial")  #for scale bar
 
+do.exploratory=FALSE
 
 # Section 1. Import Data --------------------------------------------------
 path='C:\\Matias\\FAO\\Shark_meat\\data\\Mexico\\'
 
   #Questionnaire data
-Fisher <- read_excel(paste(path,"DATA BASE SURVEY.xlsx",sep=""), sheet = "Fisher survey")
-Middle <- read_excel(paste(path,"DATA BASE SURVEY.xlsx",sep=""), sheet = "Middleman-Aggregator survey")
-Seller <- read_excel(paste(path,"DATA BASE SURVEY.xlsx",sep=""), sheet = "Seller survey")
+Fisher <- read_excel(paste(path,"DATA BASE SURVEY_2019_12.xlsx",sep=""), sheet = "Fisher survey")
+Middle <- read_excel(paste(path,"DATA BASE SURVEY_2019_12.xlsx",sep=""), sheet = "Middleman-Aggregator survey")
+Seller <- read_excel(paste(path,"DATA BASE SURVEY_2019_12.xlsx",sep=""), sheet = "Seller survey")
 
   #Reference guide
 Fisher.ref <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "G.reference (Fisher Surv)")
@@ -52,9 +71,9 @@ Species <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "Guide sp")
 Fisher <- Fisher%>%as.data.frame%>%
           rename_all(tolower)%>%
           mutate(year=year(date),
-                 month=month(date))%>%
+                 month=month(date))%>% 
           select_if(~sum(!is.na(.)) > 0)   #remove all NA columns
-          
+       
 Middle <- Middle%>%as.data.frame%>%
           rename_all(tolower)%>%
           mutate(year=year(date),
@@ -63,12 +82,16 @@ Middle <- Middle%>%as.data.frame%>%
           select_if(~sum(!is.na(.)) > 0)   #remove all NA columns
 if("q1_d" %in% colnames(Middle)) colnames(Middle)[match("q1_d",colnames(Middle))] <- "q14_d"
 
-
 Seller <- Seller%>%as.data.frame%>%
           rename_all(tolower)%>%
             mutate(year=year(date),
                    month=month(date))%>%
           select_if(~sum(!is.na(.)) > 0)   #remove all NA columns
+
+#convert all character to lower to avoid lower and upper case
+for(n in 1:ncol(Fisher)) if(is.character(Fisher[,n])) Fisher[,n]=tolower(Fisher[,n])
+for(n in 1:ncol(Middle)) if(is.character(Middle[,n])) Middle[,n]=tolower(Middle[,n])
+for(n in 1:ncol(Seller)) if(is.character(Seller[,n])) Seller[,n]=tolower(Seller[,n])
 
 Fisher.ref <- Fisher.ref%>%as.data.frame%>%
               mutate(Question=tolower(Question))%>%
@@ -93,10 +116,6 @@ Seller.ref <- Seller.ref%>%as.data.frame%>%
 #define how to group vars for display
 #note: the '&' groups the same question 'now' and 'before'
 
-#missing: q13 & q14 must be analysed if they are shark fishers or not!
-#problem: Q17 and Q19 are 'catch now at average capacity' but 
-#         Q18 and Q20 are 'catch before at maximum capacity'
-#         Q36, 37 & 38: are these 'now' or 'before' would have to assume 'now'
 fn.pst=function(Q,rng) paste(paste(Q,tolower(LETTERS[rng]),sep='_'),collapse=" & ")
 Q.list.Fisher=list(
     General=c('location','estate (districit)'),
@@ -145,11 +164,10 @@ Q.list.Fisher=list(
                      'q82 & q83',
                      'q84 & q85',
                      fn.pst('q104',1:11),
-                     fn.pst('q105',1:11),
+                     fn.pst('q105',1:10),
                      'q106 & q107'),
    Management=c(paste('q',67:77,sep=''),
-                      'q78 & q79',
-                      'q80'),
+                      'q79 & q80'),
    Seasonal.patrn=c(fn.pst('q89',1:10),
                     fn.pst('q90',1:10),
                     'q91 & q92',
@@ -363,104 +381,106 @@ Tab.dates=with(data.frame(group=c(rep("Fisher",length(Fisher$date)),
 write.csv(Tab.dates,paste(path,"Interview.dates.csv",sep="\\"),row.names = T)
 
 #Output full questions
-write.csv(Fisher.ref,paste(path,"Fisher.ref.csv",sep="\\"),row.names = T)
-write.csv(Middle.ref,paste(path,"Middle.ref.csv",sep="\\"),row.names = T)
-write.csv(Seller.ref,paste(path,"Seller.ref.csv",sep="\\"),row.names = T)
+write.csv(Fisher.ref,paste(path,"ref.Fisher.csv",sep="\\"),row.names = T)
+write.csv(Middle.ref,paste(path,"ref.Middle.csv",sep="\\"),row.names = T)
+write.csv(Seller.ref,paste(path,"ref.Seller.csv",sep="\\"),row.names = T)
 
 
-
-#Question summaries
+#Exploratory
+if(do.exploratory)
+{
   #Fisher
-for(i in 1:length(Q.list.Fisher))
-{
-  fn.fig(paste(path,"Fisher_",i,"_",names(Q.list.Fisher)[i],sep=""),2000,2400)
-  smart.par(length(Q.list.Fisher[[i]]),MAR=c(3,2,3.9,.5),OMA=c(.1,1.25,.2,.1),
-            MGP=c(1.65,.2,0))
-  par(tck=.025,cex.axis=1.25,cex.lab=1.5)
-  for(n in 1:length(Q.list.Fisher[[i]]))
+  for(i in 1:length(Q.list.Fisher))
   {
-    this=Q.list.Fisher[[i]][n]
-    if(grepl("&",this))
+    fn.fig(paste(path,"Exploratory\\Fisher_",i,"_",names(Q.list.Fisher)[i],sep=""),2000,2400)
+    smart.par(length(Q.list.Fisher[[i]]),MAR=c(3,2,3.9,.5),OMA=c(.1,1.25,.2,.1),
+              MGP=c(1.65,.2,0))
+    par(tck=.025,cex.axis=1.25,cex.lab=1.5)
+    for(n in 1:length(Q.list.Fisher[[i]]))
     {
-      this=unlist(strsplit(this," & "))
-      dummy=Fisher%>%select(this)
-      dummy$Currently=rep('Currently',nrow(dummy))
-      dummy$Before=rep('Before',nrow(dummy))
-      dummy=data.frame(var=c(dummy[,1],dummy[,2]),
-                      period=c(dummy$Currently,dummy$Before))
-      MAT=table(dummy$var,dummy$period)
-    }else
-    {
-      dummy=Fisher%>%select(this)%>%pull
-      MAT=table(dummy,useNA = 'ifany')
-    }
+      this=Q.list.Fisher[[i]][n]
+      if(grepl("&",this))
+      {
+        this=unlist(strsplit(this," & "))
+        dummy=Fisher%>%select(this)
+        dummy$Currently=rep('Currently',nrow(dummy))
+        dummy$Before=rep('Before',nrow(dummy))
+        dummy=data.frame(var=c(dummy[,1],dummy[,2]),
+                         period=c(dummy$Currently,dummy$Before))
+        MAT=table(dummy$var,dummy$period)
+      }else
+      {
+        dummy=Fisher%>%select(this)%>%pull
+        MAT=table(dummy,useNA = 'ifany')
+      }
       
-    
-    fn.brplt(MAT=MAT,XLAB=Q.list.Fisher[[i]][n])
+      
+      fn.brplt(MAT=MAT,XLAB=Q.list.Fisher[[i]][n])
+    }
+    mtext("Frequency",2,line=-.25,outer=T,las=3,cex=1.35)
+    dev.off()
   }
-  mtext("Frequency",2,line=-.25,outer=T,las=3,cex=1.35)
-  dev.off()
-}
-
+  
   #Middle
-for(i in 1:length(Q.list.Middle))
-{
-  fn.fig(paste(path,"Middle_",i,"_",names(Q.list.Middle)[i],sep=""),2000,2400)
-  smart.par(length(Q.list.Middle[[i]]),MAR=c(3,2,3.9,.5),OMA=c(.1,1.25,.2,.1),
-            MGP=c(1.65,.2,0))
-  par(tck=.025,cex.axis=1.25,cex.lab=1.5)
-  for(n in 1:length(Q.list.Middle[[i]]))
+  for(i in 1:length(Q.list.Middle))
   {
-    this=Q.list.Middle[[i]][n]
-    if(grepl("&",this))
+    fn.fig(paste(path,"Exploratory\\Middle_",i,"_",names(Q.list.Middle)[i],sep=""),2000,2400)
+    smart.par(length(Q.list.Middle[[i]]),MAR=c(3,2,3.9,.5),OMA=c(.1,1.25,.2,.1),
+              MGP=c(1.65,.2,0))
+    par(tck=.025,cex.axis=1.25,cex.lab=1.5)
+    for(n in 1:length(Q.list.Middle[[i]]))
     {
-      this=unlist(strsplit(this," & "))
-      dummy=Middle%>%select(this)
-      dummy$Currently=rep('Currently',nrow(dummy))
-      dummy$Before=rep('Before',nrow(dummy))
-      dummy=data.frame(var=c(dummy[,1],dummy[,2]),
-                       period=c(dummy$Currently,dummy$Before))
-      MAT=table(dummy$var,dummy$period)
-    }else
-    {
-      dummy=Middle%>%select(this)%>%pull
-      MAT=table(dummy)
+      this=Q.list.Middle[[i]][n]
+      if(grepl("&",this))
+      {
+        this=unlist(strsplit(this," & "))
+        dummy=Middle%>%select(this)
+        dummy$Currently=rep('Currently',nrow(dummy))
+        dummy$Before=rep('Before',nrow(dummy))
+        dummy=data.frame(var=c(dummy[,1],dummy[,2]),
+                         period=c(dummy$Currently,dummy$Before))
+        MAT=table(dummy$var,dummy$period)
+      }else
+      {
+        dummy=Middle%>%select(this)%>%pull
+        MAT=table(dummy)
+      }
+      
+      
+      fn.brplt(MAT=MAT,XLAB=Q.list.Middle[[i]][n])
     }
-    
-    
-    fn.brplt(MAT=MAT,XLAB=Q.list.Middle[[i]][n])
+    mtext("Frequency",2,line=-.25,outer=T,las=3,cex=1.35)
+    dev.off()
   }
-  mtext("Frequency",2,line=-.25,outer=T,las=3,cex=1.35)
-  dev.off()
-}
-
-#ACA
+  
   #Seller
-for(i in 1:length(Q.list.Seller))
-{
-  fn.fig(paste(path,"Seller_",i,"_",names(Q.list.Seller)[i],sep=""),2000,2400)
-  smart.par(length(Q.list.Seller[[i]]),MAR=c(3,2,3.9,.5),OMA=c(.1,1.25,.2,.1),
-            MGP=c(1.65,.2,0))
-  par(tck=.025,cex.axis=1.25,cex.lab=1.5)
-  for(n in 1:length(Q.list.Seller[[i]]))
+  for(i in 1:length(Q.list.Seller))
   {
-    this=Q.list.Seller[[i]][n]
-    if(grepl("&",this))
+    fn.fig(paste(path,"Exploratory\\Seller_",i,"_",names(Q.list.Seller)[i],sep=""),2000,2400)
+    smart.par(length(Q.list.Seller[[i]]),MAR=c(3,2,3.9,.5),OMA=c(.1,1.25,.2,.1),
+              MGP=c(1.65,.2,0))
+    par(tck=.025,cex.axis=1.25,cex.lab=1.5)
+    for(n in 1:length(Q.list.Seller[[i]]))
     {
-      this=unlist(strsplit(this," & "))
-      dummy=Seller%>%select(this)
-      dummy$Currently=rep('Currently',nrow(dummy))
-      dummy$Before=rep('Before',nrow(dummy))
-      dummy=data.frame(var=c(dummy[,1],dummy[,2]),
-                       period=c(dummy$Currently,dummy$Before))
-      MAT=table(dummy$var,dummy$period)
-    }else
-    {
-      dummy=Seller%>%select(this)%>%pull
-      MAT=table(dummy)
+      this=Q.list.Seller[[i]][n]
+      if(grepl("&",this))
+      {
+        this=unlist(strsplit(this," & "))
+        dummy=Seller%>%select(this)
+        dummy$Currently=rep('Currently',nrow(dummy))
+        dummy$Before=rep('Before',nrow(dummy))
+        dummy=data.frame(var=c(dummy[,1],dummy[,2]),
+                         period=c(dummy$Currently,dummy$Before))
+        MAT=table(dummy$var,dummy$period)
+      }else
+      {
+        dummy=Seller%>%select(this)%>%pull
+        MAT=table(dummy)
+      }
+      fn.brplt(MAT=MAT,XLAB=Q.list.Seller[[i]][n])
     }
-    fn.brplt(MAT=MAT,XLAB=Q.list.Seller[[i]][n])
+    mtext("Frequency",2,line=-.25,outer=T,las=3,cex=1.35)
+    dev.off()
   }
-  mtext("Frequency",2,line=-.25,outer=T,las=3,cex=1.35)
-  dev.off()
+  
 }
