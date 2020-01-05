@@ -13,7 +13,7 @@
 #         Q36, 37 & 38: are these 'now' or 'before' would have to assume 'now'
 
 
-#deje ACA: fisher. Fisher_4_Effort.tiff
+#deje ACA: fisher. Fisher_4_Effort.tiff; but first group ALL questions 'now' 'before'
 
 #1. Just mention in Text (export as table):
 #   'location','estate (districit)' 
@@ -48,6 +48,7 @@ library("sf")
 library("rnaturalearthdata")
 library("rnaturalearth")
 library("ggspatial")  #for scale bar
+library(gsubfn)
 
 do.exploratory=FALSE
 
@@ -385,6 +386,52 @@ write.csv(Fisher.ref,paste(path,"ref.Fisher.csv",sep="\\"),row.names = T)
 write.csv(Middle.ref,paste(path,"ref.Middle.csv",sep="\\"),row.names = T)
 write.csv(Seller.ref,paste(path,"ref.Seller.csv",sep="\\"),row.names = T)
 
+
+# Difference between now and before Stacked likert-type histogram
+Seq.brk=seq(-125,125,25)
+colfunc.pos <- colorRampPalette(c("cadetblue2", "darkblue"))
+colfunc.neg <- colorRampPalette(c("brown4","lightpink"))
+fn.diff.before.now=function(before,now)
+{
+  delta=100*(now-before)/before
+  delta=ifelse(delta<(-100),-125,ifelse(delta>100,125,delta))
+  return(table(cut(delta,breaks=Seq.brk,include.lowest=T,right = F)))
+}
+
+Before.now.questions=list(q11_12=c('q12','q11'),
+                          q13_14=c('q14','q13'),
+                          q15_16=c('q16','q15'))
+Mat=Before.now.questions
+for(b in 1:length(Before.now.questions))
+{
+  before=Fisher%>%pull(Before.now.questions[[b]][1])
+  now=Fisher%>%pull(Before.now.questions[[b]][2])
+  Tab=fn.diff.before.now(before,now)
+  Mat[[b]]=Tab
+}
+Mat=do.call(cbind,Mat)
+
+Lgn=read.pattern(text = names(Tab), pattern = ".(.+),(.+).", 
+                 col.names = c("lower", "upper"))%>%
+  mutate(rango=paste('[',paste(paste(lower,'%',sep=''),
+                               paste(upper,'%',sep=''),sep=','),
+                     ']',sep=''))%>%
+  pull(rango)
+Lgn[c(1,length(Lgn))]=c('> -100%','> 100%')  
+
+NN=(length(Seq.brk)-1)/2
+Col.pos=colfunc.pos(NN)
+Col.neg=colfunc.neg(NN)
+
+fn.fig(paste(path,"Figure 2. Percent difference now before",sep=""),2400,1600)
+par(mar=c(1,2.6,2,.2),oma=c(.1,3,2,.4),cex.axis=1.25,xpd=T,las=1,mgp=c(1,.5,0))
+barplot(Mat,horiz = T,
+        axes = F,col = c(Col.neg,Col.pos))
+legend('topleft',Lgn[1:NN],horiz=T,inset = c(-.1,-.095),
+       fill=Col.neg,cex=1.14,bty='n',x.intersp=.5)
+ legend('topleft',Lgn[(NN+1):length(Lgn)],horiz=T,inset = c(-.1,-.05),
+        fill=Col.pos,cex=1.14,bty='n',x.intersp=0.5)
+dev.off()
 
 #Exploratory
 if(do.exploratory)
