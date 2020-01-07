@@ -14,87 +14,6 @@
 #         Q36, 37 & 38: are these 'now' or 'before' would have to assume 'now'
 
 
-#deje ACA: Fisher q96_a... & q98_a  q97 is done already..
-
-#---FISHER:
-#1. Just mention in Text (export as appendix table):
-Tabl.appn=list(general=c('location','estate (districit)',
-               'q1','q3','q4'),
-               ktch=c('q95','q97'),
-               management=c('q67','q68','q69','q70','q71',
-                            'q72','q73','q74','q75','q76',
-                            'q77','q79','q80'),
-               economics=c('q81','q82 & q83','q84 & q85'),
-               climate.change='q86 & q86_a',
-               pups='q91 & q92')
-
-
-
-#2. Nice table in body text:
-Tabl.body=list(Target.ktch.now.before='q5 & q6',
-               Sekndry.ktch.now.before=
-                 c('q7_a & q7_b & q7_c', 'q8_a & q8_b & q8_c',
-                 'q9_a & q9_b & q9_c', 'q10_a & q10_b & q10_c'),
-               Target.ktch.non_shark.now.before=
-                 c('q56_1 & q56_2 & q56_3','q65 & q66'),
-               Economics=
-                 c('q33', 'q34 & q35','q29 & q30',
-                   'q36','q37','q38','q39 & q39_b',
-                   'q40 & q41', 'q42 & q42_b','q43 & q43_b',
-                   'q44 & q44_b','q45'),
-               Effort='q50 & q51',
-               Fishing_methods= 'q59 & q60'
-               )
-
-                                  
-
-
-#3. Figure in body text:
-Before.now.questions.fisher=list(#catch
-                                 q15_16=c(before='q16',now='q15'),
-                                 q17_18=c(before='q18',now='q17'),
-                                 q19_20=c(before='q20',now='q19'),
-                                 q25_26=c(before='q26',now='q25'),
-                                 q27_28=c(before='q28',now='q27'),
-                                 q57_58=c(before='q58',now='q57'),
-                                 
-                                 #effort
-                                 q11_12=c(before='q12',now='q11'),
-                                 q13_14=c(before='q14',now='q13'),
-                                 q46_47=c(before='q47',now='q46'),
-                                 q48_49=c(before='q49',now='q48'),
-                                 q52_53=c(before='q53',now='q52'),
-                                 q52_53=c(before='q53',now='q52'),
-                                 q61_62=c(before='q62',now='q61'),
-                                 q63_64=c(before='q64',now='q63'),
-                                 
-                                 #economics
-                                 q21_22=c(before='q22',now='q21'),
-                                 q23_24=c(before='q24',now='q23'),
-                                 q31_32=c(before='q32',now='q31'))
-
-fn.pst=function(Q,rng) paste(paste(Q,tolower(LETTERS[rng]),sep='_'),collapse=" & ")
-fn.pst1=function(Q,rng) paste(paste(Q,tolower(LETTERS[rng]),sep='_'),sep=",")
-
-Before.now.species.comp=list(abundance=fn.pst1('q87',1:10), 
-                             size=fn.pst1('q88',1:10),
-                             month.now=fn.pst1('q89',c(1:5,7)),
-                             month.before=fn.pst1('q90',c(1:5,7:10)))
-
-Before.now.species.landings=list(before=fn.pst1('q93',1:5),  #MISSING: create plot
-                                 now=fn.pst1('q94',1:5))
-
-#ACA q96_a... & q98_a...
-
-#4. Figure in Apendices:
-Fig.appn=list('q2') #for q2 (use histograms, not barplot; cut in 5 year intervals)
-
-
-
-#---MIDDLE:
-
-
-#---SELLER:
 
 library(readxl)
 library(tidyverse)
@@ -310,7 +229,7 @@ if(do.exploratory)
       if(grepl("&",this))
       {
         this=unlist(strsplit(this," & "))
-        dummy=Fisher%>%select(this)
+        dummy=Fisher%>%dplyr::select(this)
         dummy$Currently=rep('Currently',nrow(dummy))
         dummy$Before=rep('Before',nrow(dummy))
         dummy=data.frame(var=c(dummy[,1],dummy[,2]),
@@ -318,7 +237,7 @@ if(do.exploratory)
         MAT=table(dummy$var,dummy$period)
       }else
       {
-        dummy=Fisher%>%select(this)%>%pull
+        dummy=Fisher%>%dplyr::select(this)%>%pull
         MAT=table(dummy,useNA = 'ifany')
       }
       
@@ -442,14 +361,95 @@ if(do.exploratory)
   
 }
 
-# Section 4. Outputs --------------------------------------------------
+# Section 4. Grouping of columns --------------------------------------------------
+
+#deje ACA: Fisher q96_a... & q98_a  q95 and q97 done already..
+
+#4.1__FISHER:
+  #4.1.1. Just mention in Text (export as appendix table):
+Tabl.appn=list(general=c('location','estate (districit)',
+                         'q1','q3','q4'),
+               month.ktch=c('q95 & q97'),
+               management=c('q67','q68','q69','q70','q71',
+                            'q72','q73','q74','q75','q76',
+                            'q77','q79','q80'),
+               economics=c('q81_a & q81_b & q81_c',
+                           'q82 & q83','q84 & q85'),
+               climate.change=c('q86','q86_a'),
+               pups=c('q91 & q92'))
+
+
+  #4.1.2. Table in body text:
+Tabl.body=list(Target.ktch.now.before='q5 & q6',
+               Sekndry.ktch.now.before=
+                 c('q7_a & q7_b & q7_c', 'q8_a & q8_b & q8_c',
+                   'q9_a & q9_b & q9_c', 'q10_a & q10_b & q10_c'),
+               Target.ktch.non_shark.now.before=
+                 c('q56_1 & q56_2 & q56_3','q65 & q66'),
+               Economics=
+                 c('q33', 'q34 & q35','q29 & q30',
+                   'q36','q37','q38','q39 & q39_b',
+                   'q40 & q41', 'q42 & q42_b','q43 & q43_b',
+                   'q44 & q44_b','q45'),
+               Effort='q50 & q51',
+               Fishing_methods= 'q59 & q60'
+)
+
+Table.Before.now.species.landings=list(before=fn.pst1('q93',1:5),  
+                                       now=fn.pst1('q94',1:5))
+
+  #4.1.3. Figure in body text:
+Before.now.questions.fisher=list(
+          #catch
+          q15_16=c(before='q16',now='q15'),
+          q17_18=c(before='q18',now='q17'),
+          q19_20=c(before='q20',now='q19'),
+          q25_26=c(before='q26',now='q25'),
+          q27_28=c(before='q28',now='q27'),
+          q57_58=c(before='q58',now='q57'),
+          
+          #effort
+          q11_12=c(before='q12',now='q11'),
+          q13_14=c(before='q14',now='q13'),
+          q46_47=c(before='q47',now='q46'),
+          q48_49=c(before='q49',now='q48'),
+          q52_53=c(before='q53',now='q52'),
+          q52_53=c(before='q53',now='q52'),
+          q61_62=c(before='q62',now='q61'),
+          q63_64=c(before='q64',now='q63'),
+          
+          #economics
+          q21_22=c(before='q22',now='q21'),
+          q23_24=c(before='q24',now='q23'),
+          q31_32=c(before='q32',now='q31'))
+
+fn.pst=function(Q,rng) paste(paste(Q,tolower(LETTERS[rng]),sep='_'),collapse=" & ")
+fn.pst1=function(Q,rng) paste(paste(Q,tolower(LETTERS[rng]),sep='_'),sep=",")
+
+Before.now.species.comp=list(abundance=fn.pst1('q87',1:10), 
+                             size=fn.pst1('q88',1:10),
+                             month.now=fn.pst1('q89',c(1:5,7)),
+                             month.before=fn.pst1('q90',c(1:5,7:10)))
+
+
+  #4.1.4. Figure in Apendices:
+Fig.appn=list('q2') #for q2 (use histograms, not barplot; cut in 5 year intervals)
+
+
+#4.2__MIDDLE:
+
+
+
+#4.3__SELLER:
+
+
+# Section 5. Outputs --------------------------------------------------
 fn.fig=function(NAME,Width,Height) tiff(file=paste(NAME,".tiff",sep=""),width=Width,height=Height,units="px",res=300)
 smart.par=function(n.plots,MAR,OMA,MGP) return(par(mfrow=n2mfrow(n.plots),mar=MAR,oma=OMA,las=1,mgp=MGP,xpd=T))
 path='C:\\Matias\\FAO\\Shark_meat\\Outputs\\Mexico\\'
 
-
-#Map of Study Area
-do.Map=TRUE
+#5.1 Map of Study Area
+do.Map=FALSE
 if(do.Map)
 {
   theme_set(theme_bw()) 
@@ -525,8 +525,7 @@ if(do.Map)
   ggsave(paste(path,"map.png",sep=''),width = 10, height = 6, dpi = 300)
 }
 
-
-#Output date of interviews
+#5.2 Output date of interviews
 Tab.dates=with(data.frame(group=c(rep("Fisher",length(Fisher$date)),
                    rep("Middle",length(Middle$date)),
                    rep("Seller",length(Seller$date))),
@@ -534,14 +533,14 @@ Tab.dates=with(data.frame(group=c(rep("Fisher",length(Fisher$date)),
      table(group,date))
 write.csv(Tab.dates,paste(path,"Interview.dates.csv",sep="\\"),row.names = T)
 
-#Output full questions
+#5.3 Output full questions
 write.csv(Fisher.ref,paste(path,"ref.Fisher.csv",sep="\\"),row.names = T)
 write.csv(Middle.ref,paste(path,"ref.Middle.csv",sep="\\"),row.names = T)
 write.csv(Seller.ref,paste(path,"ref.Seller.csv",sep="\\"),row.names = T)
 
-
-#1. Fisher 
-  # Difference between now and before Stacked likert-type histogram
+#5.4. Fisher 
+  #...Figures
+    # Difference between now and before Stacked likert-type histogram
 Seq.brk=seq(-125,125,25)
 colfunc.pos <- colorRampPalette(c("cadetblue2", "darkblue"))
 colfunc.neg <- colorRampPalette(c("brown4","lightpink"))
@@ -561,11 +560,11 @@ for(b in 1:length(Before.now.questions.fisher))
 }
 Mat=do.call(cbind,Mat)
 Lgn=read.pattern(text = names(Tab), pattern = ".(.+),(.+).", 
-                 col.names = c("lower", "upper"))%>%
-  mutate(rango=paste('[',paste(paste(lower,'%',sep=''),
-                               paste(upper,'%',sep=''),sep=','),
-                     ']',sep=''))%>%
-  pull(rango)
+                           col.names = c("lower", "upper"))%>%
+            mutate(rango=paste('[',paste(paste(lower,'%',sep=''),
+                                         paste(upper,'%',sep=''),sep=','),
+                               ']',sep=''))%>%
+            pull(rango)
 Lgn[c(1,length(Lgn))]=c('> -100%','> 100%')  
 NN=(length(Seq.brk)-1)/2
 Col.pos=colfunc.pos(NN)
@@ -580,10 +579,10 @@ legend('topleft',Lgn[1:NN],horiz=T,inset = c(-.1,-.095),
         fill=Col.pos,cex=1.14,bty='n',x.intersp=0.5)
 dev.off()
 
-  # Changes in species thru time
+    # Changes in species thru time
 fn.fig(paste(path,"Figure 3. Species changes",sep=""),2400,2000)
-par(mfrow=c(1,length(Before.now.species.comp)),mar=c(1,2.6,.1,.2),
-    oma=c(.1,3,.1,.4),cex.axis=1.1,xpd=T,las=1,mgp=c(1,.1,0))
+par(mfrow=c(1,length(Before.now.species.comp)),mar=c(1,2.6,.1,2.5),
+    oma=c(.1,3,.1,.4),cex.axis=.95,xpd=T,las=1,mgp=c(1,.1,0))
 for(b in 1:length(Before.now.species.comp))
 {
   Tab=Fisher%>%dplyr::select(Before.now.species.comp[[b]])
@@ -595,8 +594,60 @@ for(b in 1:length(Before.now.species.comp))
   for(tt in 1:length(Tab1)) Tab1[[tt]]=table(Tab[,tt])
   Mat=do.call(cbind,Tab1)
   CL=1:nrow(Mat)
+  colnames(Mat)=paste(colnames(Mat),paste('(n=',colSums(Mat),')',sep=''))
   barplot(Mat,horiz = T,axes = F,col=CL)
-  legend('bottom',rownames(Mat),
+  legend('bottomright',rownames(Mat),
          cex=1,fill=CL,bty='n')
 }
 dev.off()
+
+  #...Tables
+fn.tbl=function(d,where)    
+{
+  for(i in 1:length(d))
+  {
+    for(nn in 1:length(d[[i]]))
+    {
+      this=d[[i]][nn]
+      if(grepl("&",this))
+      {
+        this=unlist(strsplit(this," & "))
+        dummy=Fisher%>%dplyr::select(this)
+        Dat=data.frame(period=rep(this,each=nrow(dummy)),
+                       var=unlist(dummy))
+        MAT=with(Dat,table(var,period,useNA = 'ifany'))
+        write.csv(MAT,paste(path,where,names(d)[i],"_",d[[i]][nn],".csv",sep=""))
+        
+      }else
+      {
+        dummy=Fisher%>%dplyr::select(this)
+        MAT=table(dummy,useNA = 'ifany')
+        write.csv(MAT,paste(path,where,names(d)[i],"_",this,".csv",sep=""),row.names=F)
+      }
+    }
+   }
+}
+  #appendix tables
+fn.tbl(d=Tabl.appn,where="Appendix\\") 
+
+  #main body tables
+fn.tbl(d=Tabl.body,where="Table.")     
+
+  #number landed now and before
+fn.tabl.n.land.now.before=function(d)
+{
+  Tab=Fisher%>%dplyr::select(d)
+  Tab1=vector('list',ncol(Tab))
+  names(Tab1)=names(Tab)
+  for(tt in 1:length(Tab1)) Tab1[[tt]]=summary(Tab[,tt])
+  return(do.call(rbind,Tab1))
+}
+bef=fn.tabl.n.land.now.before(Table.Before.now.species.landings$before)
+nw=fn.tabl.n.land.now.before(Table.Before.now.species.landings$now)
+write.csv(cbind(t(bef),t(nw)),paste(path,"Appendix\\Summary_Number.landed.now.before.csv",sep=""),row.names = T)
+
+
+#5.5. Middle 
+
+
+#5.6. Seller 
