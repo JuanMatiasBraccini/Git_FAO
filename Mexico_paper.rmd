@@ -47,65 +47,57 @@ Garcia, S.M. and Rosenbery, A.A. (2010) Food security and marine capture fisheri
 Purcell et al 2014. The cost of being valuable: predictors of extinction risk in marine invertebrates exploited as luxury seafood
 
 
-====================
-```{r}
-Tab1=read.table('C:/Matias/FAO/Shark_meat/Outputs/Mexico/Interview.dates.csv',
+# Main Body Tables
+```{r, results='asis'}
+WD='C:/Matias/FAO/Shark_meat/Outputs/Mexico'
+file_list <- list.files(path=WD)
+All.tabs=file_list[grep("TableFisher",file_list)]
+Nms=sapply(strsplit(All.tabs, split='.csv', fixed=TRUE), function(x) (x[1]))
+for(a in 1:length(All.tabs))
+{
+  Tab1=read.table(paste(WD,All.tabs[a],sep='/'),
                 check.names=FALSE,sep = ",",header=T)
-knitr::kable(Tab1,caption="Inteview dates")
+  print(knitr::kable(Tab1,caption=Nms[a])) 
+}
+
 ```
 
+# Main Body Figures
 
+![Figure 1. Map of study area showing the sampling location.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Figure 1.map.tiff)
 
+![Figure Fisher 2. Percentage difference between current situation and when fisher started fishing.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Figure Fisher 2. Percent difference now before.tiff)
 
-![Figure 1. Map of study area showing the sampling location.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/map.png)
-
-
-
-![Figure 2. Fisher questionnaire. General.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_1_General.tiff)
-
-![Figure 3. Fisher questionnaire. Fisher profile.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_2_Fisher profile.tiff)
-
-![Figure 5. Fisher questionnaire. Catch.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_3_Catch.tiff)
-
-![Figure 6. Fisher questionnaire. Effort.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_4_Effort.tiff)
-
-![Figure 7. Fisher questionnaire. Socio economics.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_5_Socio.economics.tiff)
-
-![Figure 8. Fisher questionnaire. Management.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_6_Management.tiff)
-
-![Figure 9. Fisher questionnaire. Seasonal.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_7_Seasonal.patrn.tiff)
-
-![Figure 10. Fisher questionnaire. Species composition.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher_8_Species_compo.tiff)
-
-![Figure 11. Middle questionnaire. General.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Middle_1_General.tiff)
-
-![Figure 12. Middle questionnaire. Socio economics.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Middle_2_Socio.economics.tiff)
-
-![Figure 13. Middle questionnaire. Management.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Middle_3_Management.tiff)
-
-![Figure 14. Middle questionnaire. Species composition.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Middle_4_Species_compo.tiff)
-
-![Figure 15. Seller questionnaire. General.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Seller_1_General.tiff)
-
-![Figure 16. Seller questionnaire. Commercial.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Seller_2_Commercial.tiff)
-
-![Figure 17. Seller questionnaire. Consumption](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Seller_3_Consumption.tiff)
-
-![Figure 18. Seller questionnaire. Management.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Seller_4_Management.tiff)
+![Figure Fisher 3. Changes through time in species abundance and seasonality.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Figure Fisher 3. Species changes.tiff)
 
 \newpage
 
-Appendices
-====================
-```{r}
-Tab1=read.table('C:/Matias/FAO/Shark_meat/Outputs/Mexico/Fisher.ref.csv',
-                check.names=FALSE,sep = ",",header=T)
-knitr::kable(Tab1,caption="Questionnaire. Fisher")
 
-Tab1=read.table('C:/Matias/FAO/Shark_meat/Outputs/Mexico/Middle.ref.csv',
+# Appendix Tables
+```{r, results='asis'}
+WD='C:/Matias/FAO/Shark_meat/Outputs/Mexico/Appendix'
+file_list <- list.files(path=WD)
+All.tabs=file_list[grep("TableFisher",file_list)]
+Nms=sapply(strsplit(All.tabs, split='.csv', fixed=TRUE), function(x) (x[1]))
+for(a in 1:length(All.tabs))
+{
+  Tab1=read.table(paste(WD,All.tabs[a],sep='/'),
                 check.names=FALSE,sep = ",",header=T)
-knitr::kable(Tab1,caption="Questionnaire. Middle")
+  print(knitr::kable(Tab1,caption=Nms[a])) 
+}
 
-Tab1=read.table('C:/Matias/FAO/Shark_meat/Outputs/Mexico/Seller.ref.csv',
+All.tabs=file_list[grep("Fisher.Summary",file_list)]
+Nms=sapply(strsplit(All.tabs, split='.csv', fixed=TRUE), function(x) (x[1]))
+for(a in 1:length(All.tabs))
+{
+  Tab1=read.table(paste(WD,All.tabs[a],sep='/'),
                 check.names=FALSE,sep = ",",header=T)
-knitr::kable(Tab1,caption="Questionnaire. Seller")
+  print(knitr::kable(Tab1,caption=Nms[a])) 
+}
+
+
+```
+
+# Appendix Figures
+
+![Figure A.1. Number of years in fishery.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Appendix/Fisher q2. Years in the fishery.tiff)

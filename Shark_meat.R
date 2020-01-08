@@ -12,7 +12,7 @@
 #problem: Q17 and Q19 are 'catch now at average capacity' but 
 #         Q18 and Q20 are 'catch before at maximum capacity'
 #         Q36, 37 & 38: are these 'now' or 'before' would have to assume 'now'
-
+#        'q28' and'q27' all both all zeros so nothing to output...
 
 
 library(readxl)
@@ -87,10 +87,19 @@ Seller.ref <- Seller.ref%>%as.data.frame%>%
                          Question='Question long')%>%
               dplyr::select(-c(Section,Combo))
 
-
+#Fix Fisher$q104_e, it should be numeric
+if(!is.numeric(Fisher$q104_e))
+{
+  Fisher=Fisher%>%
+    mutate(q104_e=ifelse(q104_e=="45-50","47.5",
+                  ifelse(q104_e=="50-60","55",q104_e)),
+           q104_e=as.numeric(q104_e))
+}
+  
 # Section 3. Exploratory --------------------------------------------------
 if(do.exploratory)
 {
+  fn.pst=function(Q,rng) paste(paste(Q,tolower(LETTERS[rng]),sep='_'),collapse=" & ")
   colfunc <- colorRampPalette(c("lightcyan", "dodgerblue4"))
   fn.brplt=function(MAT,XLAB)
   {
@@ -363,40 +372,45 @@ if(do.exploratory)
 
 # Section 4. Grouping of columns --------------------------------------------------
 
-#deje ACA: Fisher q96_a... & q98_a  q95 and q97 done already..
+#deje ACA: MIDDLE.
 
 #4.1__FISHER:
   #4.1.1. Just mention in Text (export as appendix table):
-Tabl.appn=list(general=c('location','estate (districit)',
+Tabl.appn=list(TableFisher.2_general=c('location','estate (districit)',
                          'q1','q3','q4'),
-               month.ktch=c('q95 & q97'),
-               management=c('q67','q68','q69','q70','q71',
+               TableFisher.3_month.ktch=c('q95 & q97','q99','q100 & q102','q101 & q103'),
+               TableFisher.4_size.ktch=c('q96_a & q98_a','q96_c & q98_c','q96_e & q98_e'),
+               TableFisher.5_pups=c('q91 & q92'),
+               TableFisher.6_management=c('q67','q68','q69','q70','q71',
                             'q72','q73','q74','q75','q76',
                             'q77','q79','q80'),
-               economics=c('q81_a & q81_b & q81_c',
-                           'q82 & q83','q84 & q85'),
-               climate.change=c('q86','q86_a'),
-               pups=c('q91 & q92'))
+               TableFisher.7_economics=c('q81_a & q81_b & q81_c',
+                           'q82 & q83','q84 & q85','q106 & q107'),
+               TableFisher.8_climate.change=c('q86','q86_a'))
 
 
   #4.1.2. Table in body text:
-Tabl.body=list(Target.ktch.now.before='q5 & q6',
-               Sekndry.ktch.now.before=
+Tabl.body=list(TableFisher.1_Target.ktch.now.before='q5 & q6',
+               TableFisher.2_Sekndry.ktch.now.before=
                  c('q7_a & q7_b & q7_c', 'q8_a & q8_b & q8_c',
                    'q9_a & q9_b & q9_c', 'q10_a & q10_b & q10_c'),
-               Target.ktch.non_shark.now.before=
+               TableFisher.3_Target.ktch.non_shark.now.before=
                  c('q56_1 & q56_2 & q56_3','q65 & q66'),
-               Economics=
+               TableFisher.4_Fishing_methods= 'q59 & q60',
+               TableFisher.5_Effort='q50 & q51',
+               TableFisher.6_Economics=
                  c('q33', 'q34 & q35','q29 & q30',
                    'q36','q37','q38','q39 & q39_b',
                    'q40 & q41', 'q42 & q42_b','q43 & q43_b',
-                   'q44 & q44_b','q45'),
-               Effort='q50 & q51',
-               Fishing_methods= 'q59 & q60'
+                   'q44 & q44_b','q45')
 )
 
+fn.pst1=function(Q,rng) paste(paste(Q,tolower(LETTERS[rng]),sep='_'),sep=",")
 Table.Before.now.species.landings=list(before=fn.pst1('q93',1:5),  
                                        now=fn.pst1('q94',1:5))
+
+Table.Before.now.species.economics=list(before=fn.pst1('q105',1:10),  
+                                       now=fn.pst1('q104',1:10))
 
   #4.1.3. Figure in body text:
 Before.now.questions.fisher=list(
@@ -405,7 +419,6 @@ Before.now.questions.fisher=list(
           q17_18=c(before='q18',now='q17'),
           q19_20=c(before='q20',now='q19'),
           q25_26=c(before='q26',now='q25'),
-          q27_28=c(before='q28',now='q27'),
           q57_58=c(before='q58',now='q57'),
           
           #effort
@@ -423,9 +436,6 @@ Before.now.questions.fisher=list(
           q23_24=c(before='q24',now='q23'),
           q31_32=c(before='q32',now='q31'))
 
-fn.pst=function(Q,rng) paste(paste(Q,tolower(LETTERS[rng]),sep='_'),collapse=" & ")
-fn.pst1=function(Q,rng) paste(paste(Q,tolower(LETTERS[rng]),sep='_'),sep=",")
-
 Before.now.species.comp=list(abundance=fn.pst1('q87',1:10), 
                              size=fn.pst1('q88',1:10),
                              month.now=fn.pst1('q89',c(1:5,7)),
@@ -433,7 +443,7 @@ Before.now.species.comp=list(abundance=fn.pst1('q87',1:10),
 
 
   #4.1.4. Figure in Apendices:
-Fig.appn=list('q2') #for q2 (use histograms, not barplot; cut in 5 year intervals)
+Fig.appn=list(yrs.in.fishery='q2') 
 
 
 #4.2__MIDDLE:
@@ -444,7 +454,8 @@ Fig.appn=list('q2') #for q2 (use histograms, not barplot; cut in 5 year interval
 
 
 # Section 5. Outputs --------------------------------------------------
-fn.fig=function(NAME,Width,Height) tiff(file=paste(NAME,".tiff",sep=""),width=Width,height=Height,units="px",res=300)
+fn.fig=function(NAME,Width,Height) tiff(file=paste(NAME,".tiff",sep=""),
+              width=Width,height=Height,units="px",res=300,compression="lzw")
 smart.par=function(n.plots,MAR,OMA,MGP) return(par(mfrow=n2mfrow(n.plots),mar=MAR,oma=OMA,las=1,mgp=MGP,xpd=T))
 path='C:\\Matias\\FAO\\Shark_meat\\Outputs\\Mexico\\'
 
@@ -522,23 +533,15 @@ if(do.Map)
     geom_point(aes(x=-82.75,y=17),size=3, shape = 22, fill = "darkgreen") +
     geom_point(aes(x=-82.75,y=16),size=3, shape = 23, fill = "blue")
   
-  ggsave(paste(path,"map.png",sep=''),width = 10, height = 6, dpi = 300)
+  ggsave(paste(path,"Figure 1.map.tiff",sep=''),width = 10, height = 6, dpi = 300)
 }
 
-#5.2 Output date of interviews
-Tab.dates=with(data.frame(group=c(rep("Fisher",length(Fisher$date)),
-                   rep("Middle",length(Middle$date)),
-                   rep("Seller",length(Seller$date))),
-           date=as.character(c(Fisher$date,Middle$date,Seller$date))),
-     table(group,date))
-write.csv(Tab.dates,paste(path,"Interview.dates.csv",sep="\\"),row.names = T)
+#5.2 Output full questions
+write.csv(Fisher.ref,paste(path,"Full.questionnaire\\ref.Fisher.csv",sep="\\"),row.names = T)
+write.csv(Middle.ref,paste(path,"Full.questionnaire\\ref.Middle.csv",sep="\\"),row.names = T)
+write.csv(Seller.ref,paste(path,"Full.questionnaire\\ref.Seller.csv",sep="\\"),row.names = T)
 
-#5.3 Output full questions
-write.csv(Fisher.ref,paste(path,"ref.Fisher.csv",sep="\\"),row.names = T)
-write.csv(Middle.ref,paste(path,"ref.Middle.csv",sep="\\"),row.names = T)
-write.csv(Seller.ref,paste(path,"ref.Seller.csv",sep="\\"),row.names = T)
-
-#5.4. Fisher 
+#5.3. Fisher 
   #...Figures
     # Difference between now and before Stacked likert-type histogram
 Seq.brk=seq(-125,125,25)
@@ -569,7 +572,7 @@ Lgn[c(1,length(Lgn))]=c('> -100%','> 100%')
 NN=(length(Seq.brk)-1)/2
 Col.pos=colfunc.pos(NN)
 Col.neg=colfunc.neg(NN)
-fn.fig(paste(path,"Figure 2. Percent difference now before",sep=""),2400,1600)
+fn.fig(paste(path,"Figure Fisher 2. Percent difference now before",sep=""),2400,1600)
 par(mar=c(1,2.6,2,.2),oma=c(.1,3,2,.4),cex.axis=1.25,xpd=T,las=1,mgp=c(1,.5,0))
 barplot(Mat,horiz = T,
         axes = F,col = c(Col.neg,Col.pos))
@@ -580,7 +583,7 @@ legend('topleft',Lgn[1:NN],horiz=T,inset = c(-.1,-.095),
 dev.off()
 
     # Changes in species thru time
-fn.fig(paste(path,"Figure 3. Species changes",sep=""),2400,2000)
+fn.fig(paste(path,"Figure Fisher 3. Species changes",sep=""),2400,2000)
 par(mfrow=c(1,length(Before.now.species.comp)),mar=c(1,2.6,.1,2.5),
     oma=c(.1,3,.1,.4),cex.axis=.95,xpd=T,las=1,mgp=c(1,.1,0))
 for(b in 1:length(Before.now.species.comp))
@@ -600,6 +603,13 @@ for(b in 1:length(Before.now.species.comp))
          cex=1,fill=CL,bty='n')
 }
 dev.off()
+
+  # Appendix figure
+fn.fig(paste(path,"Appendix\\Fisher q2. Years in the fishery",sep=""),2400,2000)
+hist(Fisher%>%pull(Fig.appn$yrs.in.fishery),breaks=seq(0,60,5),
+     xlab="Years in the fishery",main='',col=2,cex.axis=1.25,cex.lab=1.5)
+dev.off()
+
 
   #...Tables
 fn.tbl=function(d,where)    
@@ -630,10 +640,20 @@ fn.tbl=function(d,where)
   #appendix tables
 fn.tbl(d=Tabl.appn,where="Appendix\\") 
 
-  #main body tables
-fn.tbl(d=Tabl.body,where="Table.")     
+#date of interviews
+Tab.dates=with(data.frame(group=c(rep("Fisher",length(Fisher$date)),
+                                  rep("Middle",length(Middle$date)),
+                                  rep("Seller",length(Seller$date))),
+                          date=as.character(c(Fisher$date,Middle$date,Seller$date))),
+               table(group,date))
+write.csv(Tab.dates,paste(path,"Appendix\\TableFisher.1.Interview.dates.csv",sep="\\"),row.names = T)
 
-  #number landed now and before
+
+  #main body tables
+fn.tbl(d=Tabl.body,where="")     
+
+  #number and prices landed now and before 
+# note: too small a sample for significance test
 fn.tabl.n.land.now.before=function(d)
 {
   Tab=Fisher%>%dplyr::select(d)
@@ -642,12 +662,27 @@ fn.tabl.n.land.now.before=function(d)
   for(tt in 1:length(Tab1)) Tab1[[tt]]=summary(Tab[,tt])
   return(do.call(rbind,Tab1))
 }
-bef=fn.tabl.n.land.now.before(Table.Before.now.species.landings$before)
-nw=fn.tabl.n.land.now.before(Table.Before.now.species.landings$now)
-write.csv(cbind(t(bef),t(nw)),paste(path,"Appendix\\Summary_Number.landed.now.before.csv",sep=""),row.names = T)
+bef=fn.tabl.n.land.now.before(d=Table.Before.now.species.landings$before)
+nw=fn.tabl.n.land.now.before(d=Table.Before.now.species.landings$now)
+out=cbind(t(bef),t(nw))
+out.id=sapply(strsplit(colnames(out), split='_', fixed=TRUE), function(x) (x[2]))
+colnames(out)=paste(out.id,colnames(out),sep=".")
+out=out%>%data.frame%>%dplyr::select(sort(names(.)))
+colnames(out)=sapply(strsplit(colnames(out), split='.', fixed=TRUE), function(x) (x[2]))
+write.csv(out,paste(path,"Appendix\\Fisher.Summary_Number.landed.now.before.csv",sep=""),row.names = T)
+
+bef=fn.tabl.n.land.now.before(d=Table.Before.now.species.economics$before)
+nw=fn.tabl.n.land.now.before(d=Table.Before.now.species.economics$now)
+out=cbind(t(bef),t(nw))
+out.id=sapply(strsplit(colnames(out), split='_', fixed=TRUE), function(x) (x[2]))
+colnames(out)=paste(out.id,colnames(out),sep=".")
+out=out%>%data.frame%>%dplyr::select(sort(names(.)))
+colnames(out)=sapply(strsplit(colnames(out), split='.', fixed=TRUE), function(x) (x[2]))
+write.csv(out,paste(path,"Appendix\\Fisher.Summary_Price.now.before.csv",sep=""),row.names = T)
 
 
-#5.5. Middle 
+
+#5.4. Middle 
 
 
-#5.6. Seller 
+#5.5. Seller 
