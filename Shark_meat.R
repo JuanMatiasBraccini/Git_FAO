@@ -1,13 +1,12 @@
 # Script for analysing FAO non-fin product project
 #MISSING: plots and tables. 
-#        Go thru each figure and decide what is main figures, 
+#        . Go thru each figure and decide what is main figures, 
 #           what is appendix figures, what is text (output as table)
 #           and what is main tables and appendix table
-#        Use latest version of database
-#        Add a flowchart of shark product, harvesting, processing and trade 
+#        . Use latest version of database
+#        . Add a flowchart of shark product, harvesting, processing and trade 
 #         (see Figures 1-4 Monjurul et al and Figure 2 Jabado et al)
-
-#missing: q13 & q14 must be analysed if they are shark fishers or not!
+#       . q13 & q14 must be analysed if they are shark fishers or not!
 
 #problem: Q17 and Q19 are 'catch now at average capacity' but 
 #         Q18 and Q20 are 'catch before at maximum capacity'
@@ -372,11 +371,9 @@ if(do.exploratory)
 
 # Section 4. Grouping of columns --------------------------------------------------
 
-#deje ACA: MIDDLE.
-
 #4.1__FISHER:
   #4.1.1. Just mention in Text (export as appendix table):
-Tabl.appn=list(TableFisher.2_general=c('location','estate (districit)',
+Tabl.appn=list(TableFisher.2_general=c('location & estate (districit)',
                          'q1','q3','q4'),
                TableFisher.3_month.ktch=c('q95 & q97','q99','q100 & q102','q101 & q103'),
                TableFisher.4_size.ktch=c('q96_a & q98_a','q96_c & q98_c','q96_e & q98_e'),
@@ -446,7 +443,48 @@ Before.now.species.comp=list(abundance=fn.pst1('q87',1:10),
 Fig.appn=list(yrs.in.fishery='q2') 
 
 
+#deje ACA: MIDDLE.Q29
 #4.2__MIDDLE:
+#4.2.1. Just mention in Text (export as appendix table):
+Tabl.appn.middle=list(TableMiddle.1_general=
+                        c('market_name & location & estate'),
+                      TableMiddle.2_collection=
+                        c('q2 & q3',
+                          'q4_a & q4_b & q4_c',
+                          'q5 & q6_a & q6_a',
+                          'q15','q27'),
+                      TableMiddle.2_sale=c('q14_a & q14_b & q14_c',
+                                           'q25')
+                      )
+
+
+#4.2.2. Table in body text:
+Tabl.body.middle=list(TableMiddle.1_Product=
+                        c('q7 & q8',
+                          'q10 & q11 & q12 & q13')
+                      )
+
+Table.Avrg.bought=list(c('q9_b','q9_c','q9_g','q9_d'))
+Table.Price.sold=list(colnames(Middle)[grep('18',colnames(Middle))])
+Table.Arg.sale.per.month=list(colnames(Middle)[grep('19',colnames(Middle))])
+Table.Percent.increase.in.price=list(colnames(Middle)[grep('22',colnames(Middle))])
+Table.Percent.decrease.in.price=list(colnames(Middle)[grep('23',colnames(Middle))])
+Table.Percent.stable.in.price=list(colnames(Middle)[grep('24',colnames(Middle))])
+
+
+#4.2.3. Figure in body text:
+Before.now.species.comp.middle=list(
+      abundance=colnames(Middle)[grep('16',colnames(Middle))],
+      size=colnames(Middle)[grep('17',colnames(Middle))],
+      product.availability=colnames(Middle)[grep('20',colnames(Middle))],
+      price.change=colnames(Middle)[grep('21',colnames(Middle))]
+      )
+
+
+#4.2.4. Figure in Apendices:
+Fig.appn.middle=list(yrs.as.collector='q1',
+                     first.time.collecting='q26',
+                     Number.collectors.first.time='q28') 
 
 
 
@@ -541,6 +579,16 @@ write.csv(Fisher.ref,paste(path,"Full.questionnaire\\ref.Fisher.csv",sep="\\"),r
 write.csv(Middle.ref,paste(path,"Full.questionnaire\\ref.Middle.csv",sep="\\"),row.names = T)
 write.csv(Seller.ref,paste(path,"Full.questionnaire\\ref.Seller.csv",sep="\\"),row.names = T)
 
+
+#date of interviews for all groups
+Tab.dates=with(data.frame(group=c(rep("Fisher",length(Fisher$date)),
+                                  rep("Middle",length(Middle$date)),
+                                  rep("Seller",length(Seller$date))),
+                          date=as.character(c(Fisher$date,Middle$date,Seller$date))),
+               table(group,date))
+write.csv(Tab.dates,paste(path,"Appendix\\TableFisher.1.Interview.dates.csv",sep="\\"),row.names = T)
+
+
 #5.3. Fisher 
   #...Figures
     # Difference between now and before Stacked likert-type histogram
@@ -604,7 +652,7 @@ for(b in 1:length(Before.now.species.comp))
 }
 dev.off()
 
-  # Appendix figure
+    # Appendix figure
 fn.fig(paste(path,"Appendix\\Fisher q2. Years in the fishery",sep=""),2400,2000)
 hist(Fisher%>%pull(Fig.appn$yrs.in.fishery),breaks=seq(0,60,5),
      xlab="Years in the fishery",main='',col=2,cex.axis=1.25,cex.lab=1.5)
@@ -637,22 +685,13 @@ fn.tbl=function(d,where)
     }
    }
 }
-  #appendix tables
+    #appendix tables
 fn.tbl(d=Tabl.appn,where="Appendix\\") 
 
-#date of interviews
-Tab.dates=with(data.frame(group=c(rep("Fisher",length(Fisher$date)),
-                                  rep("Middle",length(Middle$date)),
-                                  rep("Seller",length(Seller$date))),
-                          date=as.character(c(Fisher$date,Middle$date,Seller$date))),
-               table(group,date))
-write.csv(Tab.dates,paste(path,"Appendix\\TableFisher.1.Interview.dates.csv",sep="\\"),row.names = T)
-
-
-  #main body tables
+    #main body tables
 fn.tbl(d=Tabl.body,where="")     
 
-  #number and prices landed now and before 
+    #Summary number and prices landed now and before 
 # note: too small a sample for significance test
 fn.tabl.n.land.now.before=function(d)
 {
@@ -683,6 +722,116 @@ write.csv(out,paste(path,"Appendix\\Fisher.Summary_Price.now.before.csv",sep="")
 
 
 #5.4. Middle 
+
+  #...Figures 
+# Changes in species thru time
+fn.fig(paste(path,"Figure Middle 1. Species changes",sep=""),2400,2000)
+par(mfrow=c(1,length(Before.now.species.comp.middle)),mar=c(1,2.6,.1,2.5),
+    oma=c(.1,3,.1,.4),cex.axis=.95,xpd=T,las=1,mgp=c(1,.1,0))
+for(b in 1:length(Before.now.species.comp.middle))
+{
+  Tab=Middle%>%dplyr::select(Before.now.species.comp.middle[[b]])
+  Levls=unique(unlist(Tab))
+  Levls=Levls[!is.na(Levls)]
+  Tab=mutate_all(Tab,factor,Levls)
+  Tab1=vector('list',ncol(Tab))
+  names(Tab1)=names(Tab)
+  for(tt in 1:length(Tab1)) Tab1[[tt]]=table(Tab[,tt])
+  Mat=do.call(cbind,Tab1)
+  CL=1:nrow(Mat)
+  colnames(Mat)=paste(colnames(Mat),paste('(n=',colSums(Mat),')',sep=''))
+  barplot(Mat,horiz = T,axes = F,col=CL)
+  legend('bottomright',rownames(Mat),
+         cex=1,fill=CL,bty='n')
+}
+dev.off()
+
+    # Appendix figure
+fn.fig(paste(path,"Appendix\\Middle q1. Years as a collector",sep=""),2400,2000)
+hist(Middle%>%pull(Fig.appn.middle$yrs.as.collector),breaks=seq(0,60,5),
+     xlab="Years as a collector",main='',col=2,cex.axis=1.25,cex.lab=1.5)
+dev.off()
+
+fn.fig(paste(path,"Appendix\\Middle q26. First time collecting in village",sep=""),2400,2000)
+hist(Middle%>%pull(Fig.appn.middle$first.time.collecting),breaks=seq(0,60,5),
+     xlab="Years first collection",main='',col=2,cex.axis=1.25,cex.lab=1.5)
+dev.off()
+
+fn.fig(paste(path,"Appendix\\Middle q28. Number.collectors.first.time",sep=""),2400,2000)
+hist(Middle%>%pull(Fig.appn.middle$Number.collectors.first.time),breaks=seq(0,200,5),
+     xlab="Initial number of collectors",main='',col=2,cex.axis=1.25,cex.lab=1.5)
+dev.off()
+  #...Tables  
+fn.tbl.middle=function(d,where)    
+{
+  for(i in 1:length(d))
+  {
+    for(nn in 1:length(d[[i]]))
+    {
+      this=d[[i]][nn]
+      if(grepl("&",this))
+      {
+        this=unlist(strsplit(this," & "))
+        dummy=Middle%>%dplyr::select(this)
+        Dat=data.frame(period=rep(this,each=nrow(dummy)),
+                       var=unlist(dummy))
+        MAT=with(Dat,table(var,period,useNA = 'ifany'))
+        write.csv(MAT,paste(path,where,names(d)[i],"_",d[[i]][nn],".csv",sep=""))
+        
+      }else
+      {
+        dummy=Middle%>%dplyr::select(this)
+        MAT=table(dummy,useNA = 'ifany')
+        write.csv(MAT,paste(path,where,names(d)[i],"_",this,".csv",sep=""),row.names=F)
+      }
+    }
+  }
+}
+    #appendix tables
+fn.tbl.middle(d=Tabl.appn.middle,where="Appendix\\") 
+
+    #main body tables
+fn.tbl.middle(d=Tabl.body.middle,where="")  
+
+    #Summary 
+fn.tabl.n.summary.middle=function(d)
+{
+  Tab=Middle%>%dplyr::select(d)
+  Tab1=vector('list',ncol(Tab))
+  names(Tab1)=names(Tab)
+  my_summary <- function(v){
+    if(!any(is.na(v))){
+      res <- c(summary(v),"NA's"=0)
+    } else{
+      res <- summary(v)
+    }
+    return(res)
+  }
+  for(tt in 1:length(Tab1))
+  {
+    dum.smry=my_summary(Tab[,tt])
+    Tab1[[tt]]=dum.smry
+  }
+    
+  return(do.call(rbind,Tab1))
+}
+out=t(fn.tabl.n.summary.middle(d=Table.Avrg.bought[[1]]))
+write.csv(out,paste(path,"Appendix\\Middle.Summary_Average.shark.ray.bought.csv",sep=""),row.names = T)
+
+out=t(fn.tabl.n.summary.middle(d=Table.Price.sold[[1]]))
+write.csv(out,paste(path,"Appendix\\Middle.Summary_Price.sold.csv",sep=""),row.names = T)
+
+out=t(fn.tabl.n.summary.middle(d=Table.Arg.sale.per.month[[1]]))
+write.csv(out,paste(path,"Appendix\\Middle.Summary_Average.sale.per.month.csv",sep=""),row.names = T)
+
+out=t(fn.tabl.n.summary.middle(d=Table.Percent.increase.in.price[[1]]))
+write.csv(out,paste(path,"Appendix\\Middle.Summary_Percent.increase.in.price.csv",sep=""),row.names = T)
+
+out=t(fn.tabl.n.summary.middle(d=Table.Percent.decrease.in.price[[1]]))
+write.csv(out,paste(path,"Appendix\\Middle.Summary_Percent.decrease.in.price.csv",sep=""),row.names = T)
+
+out=t(fn.tabl.n.summary.middle(d=Table.Percent.stable.in.price[[1]]))
+write.csv(out,paste(path,"Appendix\\Middle.Summary_Percent.stable.in.price.csv",sep=""),row.names = T)
 
 
 #5.5. Seller 
