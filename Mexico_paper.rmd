@@ -51,6 +51,8 @@ Purcell et al 2014. The cost of being valuable: predictors of extinction risk in
 ```{r, results='asis'}
 WD='C:/Matias/FAO/Shark_meat/Outputs/Mexico'
 file_list <- list.files(path=WD)
+
+#Fisher
 All.tabs=file_list[grep("TableFisher",file_list)]
 Nms=sapply(strsplit(All.tabs, split='.csv', fixed=TRUE), function(x) (x[1]))
 for(a in 1:length(All.tabs))
@@ -60,15 +62,38 @@ for(a in 1:length(All.tabs))
   print(knitr::kable(Tab1,caption=Nms[a])) 
 }
 
+#Middle
+All.tabs=file_list[grep("TableMiddle",file_list)]
+Nms=sapply(strsplit(All.tabs, split='.csv', fixed=TRUE), function(x) (x[1]))
+for(a in 1:length(All.tabs))
+{
+  Tab1=read.table(paste(WD,All.tabs[a],sep='/'),
+                check.names=FALSE,sep = ",",header=T)
+  print(knitr::kable(Tab1,caption=Nms[a])) 
+}
+
+#Seller
+All.tabs=file_list[grep("TableSeller",file_list)]
+Nms=sapply(strsplit(All.tabs, split='.csv', fixed=TRUE), function(x) (x[1]))
+for(a in 1:length(All.tabs))
+{
+  Tab1=read.table(paste(WD,All.tabs[a],sep='/'),
+                check.names=FALSE,sep = ",",header=T)
+  print(knitr::kable(Tab1,caption=Nms[a])) 
+}
 ```
 
 # Main Body Figures
 
 ![Figure 1. Map of study area showing the sampling location.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Figure 1.map.tiff)
 
-![Figure Fisher 2. Percentage difference between current situation and when fisher started fishing.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Figure Fisher 2. Percent difference now before.tiff)
+![Figure 2 Fisher. Percentage difference between current situation and when fisher started fishing.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Figure Fisher 2. Percent difference now before.tiff)
 
-![Figure Fisher 3. Changes through time in species abundance and seasonality.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Figure Fisher 3. Species changes.tiff)
+![Figure 3 Fisher. Changes through time in species abundance and seasonality.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Figure Fisher 3. Species changes.tiff)
+
+![Figure 4 Middle. Changes through time in species abundance and products](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Figure Middle 1. Species changes.tiff)
+
+![Figure 5 Seller. Changes through time in species and products](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Figure Seller 1. Species changes.tiff)
 
 \newpage
 
@@ -77,6 +102,8 @@ for(a in 1:length(All.tabs))
 ```{r, results='asis'}
 WD='C:/Matias/FAO/Shark_meat/Outputs/Mexico/Appendix'
 file_list <- list.files(path=WD)
+
+#Fisher
 All.tabs=file_list[grep("TableFisher",file_list)]
 Nms=sapply(strsplit(All.tabs, split='.csv', fixed=TRUE), function(x) (x[1]))
 for(a in 1:length(All.tabs))
@@ -95,9 +122,48 @@ for(a in 1:length(All.tabs))
   print(knitr::kable(Tab1,caption=Nms[a])) 
 }
 
+#Middle
+All.tabs=file_list[grep("TableMiddle",file_list)]
+Nms=sapply(strsplit(All.tabs, split='.csv', fixed=TRUE), function(x) (x[1]))
+for(a in 1:length(All.tabs))
+{
+  Tab1=read.table(paste(WD,All.tabs[a],sep='/'),
+                check.names=FALSE,sep = ",",header=T)
+  print(knitr::kable(Tab1,caption=Nms[a])) 
+}
+
+All.tabs=file_list[grep("Middle.Summary",file_list)]
+Nms=sapply(strsplit(All.tabs, split='.csv', fixed=TRUE), function(x) (x[1]))
+for(a in 1:length(All.tabs))
+{
+  Tab1=read.table(paste(WD,All.tabs[a],sep='/'),
+                check.names=FALSE,sep = ",",header=T)
+  print(knitr::kable(Tab1,caption=Nms[a])) 
+}
+
+#Seller
+All.tabs=file_list[grep("TableSeller",file_list)]
+Nms=sapply(strsplit(All.tabs, split='.csv', fixed=TRUE), function(x) (x[1]))
+for(a in 1:length(All.tabs))
+{
+  Tab1=read.table(paste(WD,All.tabs[a],sep='/'),
+                check.names=FALSE,sep = ",",header=T)
+  print(knitr::kable(Tab1,caption=Nms[a])) 
+}
 
 ```
 
 # Appendix Figures
 
-![Figure A.1. Number of years in fishery.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Appendix/Fisher q2. Years in the fishery.tiff)
+![Figure A.1. Fisher. Number of years in fishery.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Appendix/Fisher q2. Years in the fishery.tiff)
+
+![Figure A.2. Middle Number of years as collector.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Appendix/Middle q1. Years as a collector.tiff)
+
+![Figure A.3. Middle First time collecting in village.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Appendix/Middle q26. First time collecting in village.tiff)
+
+![Figure A.4. Middle Number of of collectors first time.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Appendix/Middle q28. Number.collectors.first.time.tiff)
+
+![Figure A.5. Middle Number of collectors now in village](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Appendix/Middle q30. Number.collectors.now.in.village.tiff)
+
+![Figure A.6. Seller Number of years as seller.](C:/Matias/FAO/Shark_meat/Outputs/Mexico/Appendix/Seller q1. Years as a seller.tiff)
+

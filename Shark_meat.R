@@ -7,6 +7,7 @@
 #        . Add a flowchart of shark product, harvesting, processing and trade 
 #         (see Figures 1-4 Monjurul et al and Figure 2 Jabado et al)
 #       . q13 & q14 must be analysed if they are shark fishers or not!
+#       . Once I get final data version from Joshafat, check that there are no NEW questions (e.g. Seller$q5_a q5_b)..same for Peru
 
 #problem: Q17 and Q19 are 'catch now at average capacity' but 
 #         Q18 and Q20 are 'catch before at maximum capacity'
@@ -443,7 +444,6 @@ Before.now.species.comp=list(abundance=fn.pst1('q87',1:10),
 Fig.appn=list(yrs.in.fishery='q2') 
 
 
-#deje ACA: MIDDLE.Q29
 #4.2__MIDDLE:
 #4.2.1. Just mention in Text (export as appendix table):
 Tabl.appn.middle=list(TableMiddle.1_general=
@@ -459,10 +459,20 @@ Tabl.appn.middle=list(TableMiddle.1_general=
 
 
 #4.2.2. Table in body text:
-Tabl.body.middle=list(TableMiddle.1_Product=
-                        c('q7 & q8',
-                          'q10 & q11 & q12 & q13')
-                      )
+Tabl.body.middle=list(TableMiddle.1_Product.location=
+                        c('q7'),
+                      TableMiddle.2_Product.parts.bought=
+                        c('q8'),
+                      TableMiddle.3_Product.condition=
+                        c('q10'),
+                      TableMiddle.4_Product.average.quality=
+                        c('q11'),
+                      TableMiddle.5_Product.service=
+                        c('q12'),
+                      TableMiddle.6_Product.process=
+                        c('q13'),
+                      TableMiddle.7_Buyer.at.beginning=c('q29 & q31'),
+                      TableMiddle.8_Management=c('q32 & q33 & q34 & q35 & q35_a & q36'))
 
 Table.Avrg.bought=list(c('q9_b','q9_c','q9_g','q9_d'))
 Table.Price.sold=list(colnames(Middle)[grep('18',colnames(Middle))])
@@ -484,11 +494,62 @@ Before.now.species.comp.middle=list(
 #4.2.4. Figure in Apendices:
 Fig.appn.middle=list(yrs.as.collector='q1',
                      first.time.collecting='q26',
-                     Number.collectors.first.time='q28') 
-
+                     Number.collectors.first.time='q28',
+                     Number.collectors.now.in.village='q30') 
 
 
 #4.3__SELLER:
+
+#4.3.1. Just mention in Text (export as appendix table):
+Tabl.appn.seller=list(TableSeller.1_general=
+                        c('q2 & q3 & q3_a'),
+                      TableSeller.2_percent.prod.increase=
+                        c('q8'),
+                      TableSeller.3_volume.sold.week=
+                        c('q11'),
+                      TableSeller.4_species.trends=
+                        c('q13 & q14 & q15 & q16 & q17'),
+                      TableSeller.5_why.sell.shark=
+                        c('q20'),
+                      TableSeller.6_business.interference=
+                        c('q21'),
+                      TableSeller.7_what.if.less.profit=
+                        c('q22'),
+                      TableSeller.8_history.shark.use=
+                        c('q23'),
+                      TableSeller.9_first.time.shark.consumption.and.what=
+                        c('q24 & q25'),
+                      TableSeller.10_first.market.sold=
+                        c('q26')
+                      )
+#4.3.2. Table in body text:
+Tabl.body.seller=list(TableSeller.1_Product.source.from=
+                        c('q4'),
+                      TableSeller.2_Product.monthly.volume=
+                        c('q5_a'),
+                      TableSeller.3_Product.condition=
+                        c('q6_meat_a'),
+                      TableSeller.4_Product.service=
+                        c('q7'),
+                      TableSeller.5_Product.sold=
+                        c('q9'),
+                      TableSeller.6_Product.destination=
+                        c('q10'),
+                      TableSeller.7_Product.buy.from.why=
+                        c('q18 & q19'),
+                      TableSeller.8_Consumption.trend=
+                        c('q28'),
+                      TableSeller.9_Management=
+                        c('q30 & q31 & q32 & q33 & q33_b & q34 & q34_b')
+                      )
+#4.3.3. Figure in body text:
+Before.now.species.comp.seller=list(
+  abundance=colnames(Seller)[grep('12',colnames(Seller))],
+  consumption=c('q27', 'q29')
+)
+
+#4.3.4. Figure in Apendices:
+Fig.appn.seller=list(yrs.as.seller='q1')
 
 
 # Section 5. Outputs --------------------------------------------------
@@ -724,7 +785,7 @@ write.csv(out,paste(path,"Appendix\\Fisher.Summary_Price.now.before.csv",sep="")
 #5.4. Middle 
 
   #...Figures 
-# Changes in species thru time
+    # Changes in species thru time
 fn.fig(paste(path,"Figure Middle 1. Species changes",sep=""),2400,2000)
 par(mfrow=c(1,length(Before.now.species.comp.middle)),mar=c(1,2.6,.1,2.5),
     oma=c(.1,3,.1,.4),cex.axis=.95,xpd=T,las=1,mgp=c(1,.1,0))
@@ -761,6 +822,13 @@ fn.fig(paste(path,"Appendix\\Middle q28. Number.collectors.first.time",sep=""),2
 hist(Middle%>%pull(Fig.appn.middle$Number.collectors.first.time),breaks=seq(0,200,5),
      xlab="Initial number of collectors",main='',col=2,cex.axis=1.25,cex.lab=1.5)
 dev.off()
+
+fn.fig(paste(path,"Appendix\\Middle q30. Number.collectors.now.in.village",sep=""),2400,2000)
+hist(Middle%>%pull(Fig.appn.middle$Number.collectors.now.in.village),breaks=seq(0,100,5),
+     xlab="Number of collectors now",main='',col=2,cex.axis=1.25,cex.lab=1.5)
+dev.off()
+
+
   #...Tables  
 fn.tbl.middle=function(d,where)    
 {
@@ -835,3 +903,66 @@ write.csv(out,paste(path,"Appendix\\Middle.Summary_Percent.stable.in.price.csv",
 
 
 #5.5. Seller 
+
+  #...Figures 
+    # Changes in species thru time
+# Changes in species thru time
+fn.fig(paste(path,"Figure Seller 1. Species changes",sep=""),2400,2000)
+par(mfrow=c(1,length(Before.now.species.comp.seller)),mar=c(1,2.6,.1,2.5),
+    oma=c(.1,3,.1,.4),cex.axis=.95,xpd=T,las=1,mgp=c(1,.1,0))
+for(b in 1:length(Before.now.species.comp.seller))
+{
+  Tab=Seller%>%dplyr::select(Before.now.species.comp.seller[[b]])
+  Levls=unique(unlist(Tab))
+  Levls=Levls[!is.na(Levls)]
+  Tab=mutate_all(Tab,factor,Levls)
+  Tab1=vector('list',ncol(Tab))
+  names(Tab1)=names(Tab)
+  for(tt in 1:length(Tab1)) Tab1[[tt]]=table(Tab[,tt])
+  Mat=do.call(cbind,Tab1)
+  CL=1:nrow(Mat)
+  colnames(Mat)=paste(colnames(Mat),paste('(n=',colSums(Mat),')',sep=''))
+  barplot(Mat,horiz = T,axes = F,col=CL)
+  legend('bottomright',rownames(Mat),
+         cex=1,fill=CL,bty='n')
+}
+dev.off()
+
+    # Appendix figure
+fn.fig(paste(path,"Appendix\\Seller q1. Years as a seller",sep=""),2400,2000)
+hist(Seller%>%pull(Fig.appn.seller$yrs.as.seller),breaks=seq(0,30,5),
+     xlab="Years as a seller",main='',col=2,cex.axis=1.25,cex.lab=1.5)
+dev.off()
+
+
+  #...Tables  
+fn.tbl.seller=function(d,where)    
+{
+  for(i in 1:length(d))
+  {
+    for(nn in 1:length(d[[i]]))
+    {
+      this=d[[i]][nn]
+      if(grepl("&",this))
+      {
+        this=unlist(strsplit(this," & "))
+        dummy=Seller%>%dplyr::select(this)
+        Dat=data.frame(period=rep(this,each=nrow(dummy)),
+                       var=unlist(dummy))
+        MAT=with(Dat,table(var,period,useNA = 'ifany'))
+        write.csv(MAT,paste(path,where,names(d)[i],"_",d[[i]][nn],".csv",sep=""))
+        
+      }else
+      {
+        dummy=Seller%>%dplyr::select(this)
+        MAT=table(dummy,useNA = 'ifany')
+        write.csv(MAT,paste(path,where,names(d)[i],"_",this,".csv",sep=""),row.names=F)
+      }
+    }
+  }
+}
+    #appendix tables
+fn.tbl.seller(d=Tabl.appn.seller,where="Appendix\\") 
+
+    #main body tables
+fn.tbl.seller(d=Tabl.body.seller,where="")  
