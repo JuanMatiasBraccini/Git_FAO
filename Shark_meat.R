@@ -31,14 +31,14 @@ do.exploratory=FALSE
 path='C:\\Matias\\FAO\\Shark_meat\\data\\Mexico\\'
 
   #Questionnaire data
-Fisher <- read_excel(paste(path,"DATA BASE SURVEY_2019_12.xlsx",sep=""), sheet = "Fisher survey")
-Middle <- read_excel(paste(path,"DATA BASE SURVEY_2019_12.xlsx",sep=""), sheet = "Middleman-Aggregator survey")
-Seller <- read_excel(paste(path,"DATA BASE SURVEY_2019_12.xlsx",sep=""), sheet = "Seller survey")
+Fisher <- read_excel(paste(path,"NFC Mexico database 17 enero.xlsx",sep=""), sheet = "Fisher survey")
+Middle <- read_excel(paste(path,"NFC Mexico database 17 enero.xlsx",sep=""), sheet = "Middleman-Aggregator survey")
+Seller <- read_excel(paste(path,"NFC Mexico database 17 enero.xlsx",sep=""), sheet = "Seller survey")
 
   #Reference guide
-Fisher.ref <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "G.reference (Fisher Surv)")
-Middle.ref <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "G.reference (middle)")
-Seller.ref <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "G.reference (seller)")
+Fisher.ref <- read_excel(paste(path,"NFC database questions guide 17 enero.xlsx",sep=""), sheet = "G.reference (Fisher)")
+Middle.ref <- read_excel(paste(path,"NFC database questions guide 17 enero.xlsx",sep=""), sheet = "G.reference (middle)")
+Seller.ref <- read_excel(paste(path,"NFC database questions guide 17 enero.xlsx",sep=""), sheet = "G.reference (seller)")
 Species <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "Guide sp")
 
 
@@ -47,13 +47,15 @@ Species <- read_excel(paste(path,"guide base.xlsx",sep=""), sheet = "Guide sp")
 Fisher <- Fisher%>%as.data.frame%>%
           rename_all(tolower)%>%
           mutate(year=year(date),
-                 month=month(date))%>% 
+                 month=month(date))%>%
+          rename(surveys=!!"survey number")%>%
           select_if(~sum(!is.na(.)) > 0)   #remove all NA columns
        
 Middle <- Middle%>%as.data.frame%>%
           rename_all(tolower)%>%
           mutate(year=year(date),
                  month=month(date))%>%
+          rename(surveys=!!"survey number")%>%
           filter(!is.na(surveys)) %>%
           select_if(~sum(!is.na(.)) > 0)   #remove all NA columns
 if("q1_d" %in% colnames(Middle)) colnames(Middle)[match("q1_d",colnames(Middle))] <- "q14_d"
@@ -62,6 +64,7 @@ Seller <- Seller%>%as.data.frame%>%
           rename_all(tolower)%>%
             mutate(year=year(date),
                    month=month(date))%>%
+          rename(surveys=!!"survey number")%>%
           select_if(~sum(!is.na(.)) > 0)   #remove all NA columns
 
 #convert all character to lower to avoid lower and upper case
@@ -161,7 +164,7 @@ if(do.exploratory)
   
   #Fisher
   Q.list.Fisher=list(
-    General=c('location','estate (districit)'),
+    General=c('locality','state'),
     'Fisher profile'=c('q1','q2','q3','q4','q86 & q86_a'),
     Catch=c('q5 & q6',                          
             'q7_a & q8_a',
@@ -198,11 +201,11 @@ if(do.exploratory)
                       'q34 & q35',
                       'q36','q37',
                       'q38',
-                      'q39','q39_b',
+                      'q39','q39_a',
                       'q40 & q41',
-                      'q42','q42_b',
-                      'q43','q43_b',
-                      'q44','q44_b',
+                      'q42','q42_a',
+                      'q43','q43_a',
+                      'q44','q44_a',
                       'q45',
                       'q82 & q83',
                       'q84 & q85',
@@ -210,7 +213,7 @@ if(do.exploratory)
                       fn.pst('q105',1:10),
                       'q106 & q107'),
     Management=c(paste('q',67:77,sep=''),
-                 'q79 & q80'),
+                 'q79'),
     Seasonal.patrn=c(fn.pst('q89',1:10),
                      fn.pst('q90',1:10),
                      'q91 & q92',
@@ -258,7 +261,8 @@ if(do.exploratory)
   }
   
   #Middle
-  Q.list.Middle=list(General=c("market_name","location","estate",
+  Q.list.Middle=list(
+      General=c("market_name","locality","state",
                                'q1',
                                'q2 & q3 & q4_a & q4_b & q4_c',
                                'q5 & q6_a & q6_b',
@@ -268,9 +272,8 @@ if(do.exploratory)
                                paste('q',10:13,sep=''),
                                fn.pst('q14',1:4),
                                'q15',
-                               paste('q',26:31,sep='')
-  ),
-  Socio.economics=c(paste(c(fn.pst('q18_meat',1:4),
+                               paste('q',26:31,sep='')),
+      Socio.economics=c(paste(c(fn.pst('q18_meat',1:4),
                             fn.pst('q18_cartilage',1:2),
                             fn.pst('q18_skin',1:2),
                             'q18_gill_a',
@@ -285,10 +288,10 @@ if(do.exploratory)
                     fn.pst('q23',1:5),
                     fn.pst('q24',1:5),
                     'q25'),
-  Management=c(paste('q',32:34,sep=''),
+      Management=c(paste('q',32:34,sep=''),
                'q35 & q35_a',
                'q36'),
-  Species_compo=c(fn.pst('q16',1:15),
+      Species_compo=c(fn.pst('q16',1:15),
                   fn.pst('q17',1:15),
                   c('q20_meat & q20_cartilage & q20_skin & q20_gill & q20_oil'))
   )
@@ -329,16 +332,16 @@ if(do.exploratory)
   }
   
   #Seller
-  Q.list.Seller=list(General=c("village","location","estate","type_of_location",
-                               'q1',
-                               'q2','q3 & q3_a'),
-                     Commercial=c('q4',fn.pst('q5',1),
-                                  'q6_meat_a',
-                                  paste('q',c(7,9:11),sep=''),fn.pst('q12',1:6),
-                                  paste('q',13:17,sep='')),
-                     Consumption=c(paste('q',18:29,sep='')),
-                     Management=c('q30','q31','q32',
-                                  'q33 & q33_b','q34 & q34_b'))
+  Q.list.Seller=list(
+        General=c("locality","location","state","type_of_location",
+                   'q1','q2','q3 & q3_a'),
+        Commercial=c('q4',fn.pst('q5',1),
+                     'q6_meat_a',
+                      paste('q',c(7,9:11),sep=''),fn.pst('q12',1:6),
+                      paste('q',13:17,sep='')),
+        Consumption=c(paste('q',18:29,sep='')),
+        Management=c('q30','q31','q32',
+                      'q33 & q33_b','q34 & q34_b'))
   for(i in 1:length(Q.list.Seller))
   {
     fn.fig(paste(path,"Exploratory\\Seller_",i,"_",names(Q.list.Seller)[i],sep=""),2000,2400)
@@ -374,15 +377,15 @@ if(do.exploratory)
 
 #4.1__FISHER:
   #4.1.1. Just mention in Text (export as appendix table):
-Tabl.appn=list(TableFisher.2_general=c('location & estate (districit)',
+Tabl.appn=list(TableFisher.2_general=c('locality & state',
                          'q1','q3','q4'),
                TableFisher.3_month.ktch=c('q95 & q97','q99','q100 & q102','q101 & q103'),
                TableFisher.4_size.ktch=c('q96_a & q98_a','q96_c & q98_c','q96_e & q98_e'),
                TableFisher.5_pups=c('q91 & q92'),
                TableFisher.6_management=c('q67','q68','q69','q70','q71',
                             'q72','q73','q74','q75','q76',
-                            'q77','q79','q80'),
-               TableFisher.7_economics=c('q81_a & q81_b & q81_c',
+                            'q77','q79'),
+               TableFisher.7_economics=c('q80_a & q80_b & q80_c',
                            'q82 & q83','q84 & q85','q106 & q107'),
                TableFisher.8_climate.change=c('q86','q86_a'))
 
@@ -398,9 +401,9 @@ Tabl.body=list(TableFisher.1_Target.ktch.now.before='q5 & q6',
                TableFisher.5_Effort='q50 & q51',
                TableFisher.6_Economics=
                  c('q33', 'q34 & q35','q29 & q30',
-                   'q36','q37','q38','q39 & q39_b',
-                   'q40 & q41', 'q42 & q42_b','q43 & q43_b',
-                   'q44 & q44_b','q45')
+                   'q36','q37','q38','q39 & q39_a',
+                   'q40 & q41', 'q42 & q42_a','q43 & q43_a',
+                   'q44 & q44_a','q45')
 )
 
 fn.pst1=function(Q,rng) paste(paste(Q,tolower(LETTERS[rng]),sep='_'),sep=",")
@@ -447,7 +450,7 @@ Fig.appn=list(yrs.in.fishery='q2')
 #4.2__MIDDLE:
 #4.2.1. Just mention in Text (export as appendix table):
 Tabl.appn.middle=list(TableMiddle.1_general=
-                        c('market_name & location & estate'),
+                        c('market_name & locality & state'),
                       TableMiddle.2_collection=
                         c('q2 & q3',
                           'q4_a & q4_b & q4_c',
@@ -759,7 +762,20 @@ fn.tabl.n.land.now.before=function(d)
   Tab=Fisher%>%dplyr::select(d)
   Tab1=vector('list',ncol(Tab))
   names(Tab1)=names(Tab)
-  for(tt in 1:length(Tab1)) Tab1[[tt]]=summary(Tab[,tt])
+  for(tt in 1:length(Tab1))
+  {
+    v=Tab[,tt]
+    if(is.character(v))
+    {
+      v.char=v[grep("_",v)]
+      v.char=as.numeric(unlist(str_split(v.char, "_")))
+      v=as.numeric(v[-grep("_",v)])
+      v=c(v,v.char)
+    }
+    Tab1[[tt]]=summary(v) 
+    
+  }
+    
   return(do.call(rbind,Tab1))
 }
 bef=fn.tabl.n.land.now.before(d=Table.Before.now.species.landings$before)
@@ -871,6 +887,14 @@ fn.tabl.n.summary.middle=function(d)
     if(!any(is.na(v))){
       res <- c(summary(v),"NA's"=0)
     } else{
+      if(is.character(v))
+      {
+        v.char=v[grep("_",v)]
+        v.char=as.numeric(unlist(str_split(v.char, "_")))
+        v=as.numeric(v[-grep("_",v)])
+        v=c(v,v.char)
+      }
+      
       res <- summary(v)
     }
     return(res)
