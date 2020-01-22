@@ -1,13 +1,7 @@
 # Script for analysing FAO non-fin product project
-#MISSING: plots and tables. 
-#        . Go thru each figure and decide what is main figures, 
-#           what is appendix figures, what is text (output as table)
-#           and what is main tables and appendix table
-#        . Use latest version of database
-#        . Add a flowchart of shark product, harvesting, processing and trade 
-#         (see Figures 1-4 Monjurul et al and Figure 2 Jabado et al)
-#       . q13 & q14 must be analysed if they are shark fishers or not!
-#       . Once I get final data version from Joshafat, check that there are no NEW questions (e.g. Seller$q5_a q5_b)..same for Peru
+#MISSING: 1. Fix shifted questions for Fishers (see word document on my desktop)
+#         2. For Fisher, make separation between 'Industrial' and 'Artisanal' where appropriate
+#             (tables, figures, summaries, etc)
 
 #problem: Q17 and Q19 are 'catch now at average capacity' but 
 #         Q18 and Q20 are 'catch before at maximum capacity'
