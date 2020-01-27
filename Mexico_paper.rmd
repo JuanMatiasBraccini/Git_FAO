@@ -98,7 +98,7 @@ for(a in 1:length(All.tabs))
 \newpage
 
 
-# Appendix Tables
+# Appendix Tables (Note:no need to include table, just describe in body text)
 ```{r, results='asis'}
 WD='C:/Matias/FAO/Shark_meat/Outputs/Mexico/Appendix'
 file_list <- list.files(path=WD)
