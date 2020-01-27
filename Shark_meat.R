@@ -2,9 +2,6 @@
 #MISSING: 1. For Fisher, can compare 'Industrial' and 'Artisanal' with contingency tables 
 
 
-
-#email: too many categories: Figure Fisher 3. Species changes (q_88a a q88_j; q_89a a q89_j)
-
 library(readxl)
 library(tidyverse)
 library(lubridate)
@@ -126,8 +123,18 @@ for(f in 1:length(Seller.to.numeric))
 
 #Fix some dodgy stuff
 Fisher=Fisher%>%
-  mutate(q5=ifelse(q5=='crustecean','crustacean',q5))
+  mutate(q5=ifelse(q5=='crustecean','crustacean',q5),
+         q66=ifelse(q66=='nana','na',q66),
+         q59=ifelse(q59=='longlines_bottom_nets','longline_bottom_nets',q59),
+         q60=ifelse(q60=='longlines_bottom_nets','longline_bottom_nets',q60),
+         q33=ifelse(q33=='a_little_more','little_more_expensive',q33),
+         q42_a=ifelse(q42_a=='price_flavor_','price_flavor',q42_a),
+         q44_a=ifelse(q44_a%in%c('devalauted','devaluated'),'devalued',q44_a))
 
+Middle=Middle%>%
+  mutate(q12=ifelse(q12=='cutting_fins_','cutting_fins',
+             ifelse(q12=='filleted,framed_frozen','filleted_framed_frozen',q12))) 
+ 
 
 # Section 3. Grouping of columns --------------------------------------------------
 
