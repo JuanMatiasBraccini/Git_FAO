@@ -8,7 +8,7 @@ library(lubridate)
 library("ggplot2")
 library("sf")
 library("rnaturalearthdata")
-library("rnaturalearth")
+library(rnaturalearth)
 library("ggspatial")  #for scale bar
 library(gsubfn)
 library(stargazer)
@@ -342,16 +342,16 @@ if(do.Map)
                           longitude=c(-105.2,-99.05,
                                       -104.85,-104.94,
                                       -116.4,-106.6,
-                                      -103.35),
+                                      -101.68),
                           latitude=c(22.22,19.34,
                                      21.54,20.75,
                                      31.90,23.25,
-                                     20.68))
+                                     21.16))
   
   sites.seller=data.frame(Village=c('Puerto Vallarta','Tamiahua',
                                     'Tuxpan',
                                     'Ensenada','Mazatlán',
-                                    'León','Guadalajara',
+                                    'Guadalajara','León',
                                     'La nueva viga'),
                           longitude=c(-105.22,-97.84,
                                       -97.80,
